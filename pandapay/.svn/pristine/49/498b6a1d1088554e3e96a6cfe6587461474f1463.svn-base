@@ -1,0 +1,10 @@
+package com.pandapay.service;
+
+/**
+ * 用户短信验证码
+ * @author 豆豆
+ *
+ */
+public interface IUserMessageCodeService {
+
+}

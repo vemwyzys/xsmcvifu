@@ -1,0 +1,143 @@
+package com.pandapay.service;
+
+import java.sql.Timestamp;
+import java.util.List;
+
+import com.pandapay.entity.BO.ChangeNumberBO;
+import com.pandapay.entity.DO.UserDO;
+
+/**
+ * 用户信息
+ * @author whx
+ *
+ */
+public interface IUserService {
+
+	/**
+	 * 新增用户信息
+	 * @param user 用户信息
+	 * @return 操作成功：返回true，失败：返回false
+	 */
+	public boolean insertUser(UserDO user);
+	
+	/**
+	 * 查询用户信息
+	 * @param openId 开放平台的用户标识Id
+	 * @return 操作成功：返回用户信息，失败：返回null
+	 */
+	public UserDO queryUserByOpenId(String openId);
+	
+	/**
+	 * 查询用户信息
+	 * @param userId 用户Id
+	 * @return 操作成功：返回用户信息，失败：返回null
+	 */
+	public UserDO queryUserByUserId(long userId);
+	
+	/**
+	 * 查询用户信息
+	 * @param userAccount 用户Id
+	 * @return 操作成功：返回用户信息，失败：返回null
+	 */
+	public UserDO queryUserByUserAccount(String userAccount);
+	
+	/**
+	 * 查询用户总数（后台操作）
+	 * @param userAccount 用户帐号，查询全部填null
+	 * @param introduceUser 推荐人帐号，查询全部填null
+	 * @param phone 手机号，查询全部填null
+	 * @param startTime 注册时间的开始时间，查询全部填null
+	 * @param endTime 注册时间的结束时间，查询全部填null
+	 * @return 操作成功：返回用户总数，失败：返回0
+	 */
+	public int queryUserTotalOfBack(String userAccount, String introduceUser, String phone, Timestamp startTime, Timestamp endTime);
+	
+	/**
+	 * 查询用户信息列表（后台操作）
+	 * @param userAccount 用户帐号，查询全部填null
+	 * @param introduceUser 推荐人帐号，查询全部填null
+	 * @param phone 手机号，查询全部填null
+	 * @param startTime 注册时间的开始时间，查询全部填null
+	 * @param endTime 注册时间的结束时间，查询全部填null
+	 * @param pageNumber 当前页码
+	 * @param pageSize 每页大小
+	 * @return 操作成功：返回用户信息列表，失败：返回null
+	 */
+	public List<UserDO> queryUserListOfBack(String userAccount, String introduceUser, String phone, Timestamp startTime, Timestamp endTime,
+			int pageNumber, int pageSize);
+	
+	/**
+	 * 验证用户帐号是否已存在
+	 * @param userAccount 用户帐号
+	 * @return 已存在：返回true，不存在：返回false
+	 */
+	public boolean validataUserAccount(String userAccount);
+	
+	/**
+	 * 验证用户登录
+	 * @param userAccount 用户账号
+	 * @param passwrod 账号密码
+	 * @return 操作成功：返回用户信息，失败：返回null
+	 */
+	public UserDO validateUserLogin(String userAccount, String passwrod);
+	
+	/**
+	 * 增加用户账户金额
+	 * @param userId 用户Id
+	 * @param accountAmount 账户金额，单位：元
+	 * @return 操作成功：返回true，失败：返回false
+	 */
+	public boolean addAccountAmount(long userId, double accountAmount);
+	
+	/**
+	 * 增加用户账户金额（批量操作）
+	 * @param changeNumberList 数据模型，增加用户金额
+	 * @return 操作成功：返回修改数量，失败：返回0
+	 */
+	public int addAccountAmountList(List<ChangeNumberBO> changeNumberList);
+	
+	/**
+	 * 减少用户账户金额
+	 * @param userId 用户Id
+	 * @param accountAmount 账户金额，单位：元
+	 * @return 操作成功：返回true，失败：返回false
+	 */
+	public boolean reduceAccountAmount(long userId, double accountAmount);
+	
+	/**
+	 * 修改用户密码
+	 * @param userId 用户Id
+	 * @param oldPassword 旧密码
+	 * @param newPassword 新密码
+	 * @return 操作成功：返回true，失败：返回false
+	 */
+	public boolean updateUserPassword(long userId, String oldPassword, String newPassword);
+	
+	/**
+	 * 修改用户手机号
+	 * @param userId 用户Id
+	 * @param phone 手机号
+	 * @return 操作成功：返回true，失败：返回false
+	 */
+	public boolean updateUserPhone(long userId, String phone);
+	
+	/**
+	 * 修改用户邮箱
+	 * @param userId 用户Id
+	 * @param email 邮箱
+	 * @return 操作成功：返回true，失败：返回false
+	 */
+	public boolean updateUserEmail(long userId, String email);
+	
+	/**
+	 * 修改用户信息
+	 * @param userId 用户Id
+	 * @param userLevel 用户等级
+	 * @param introduceUser 推荐人账号
+	 * @param userLevel 旧密码
+	 * @param newPassword  新密码
+	 * @return 操作成功：返回true，失败：返回false
+	 */
+	public boolean updateUserInfo(long userId, String phone, String email, int userLevel, String introduceUser);
+	
+}

@@ -1,0 +1,20 @@
+package com.pandapay.service.impl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.pandapay.dao.IUserAuthenDao;
+import com.pandapay.service.IUserAuthenService;
+
+/**
+ * 用户认证信息
+ * @author 豆豆
+ */
+@Service("userAuthenService")
+public class UserAuthenServiceImpl implements IUserAuthenService {
+	
+	/**用户认证信息*/
+	@Autowired
+	private IUserAuthenDao userAuthenDao;
+
+}

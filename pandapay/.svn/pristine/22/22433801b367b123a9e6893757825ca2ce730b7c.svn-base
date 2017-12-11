@@ -1,0 +1,47 @@
+package com.pandapay.controller.pay;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.iqmkj.utils.LogUtil;
+import com.iqmkj.utils.StringUtil;
+import com.pandapay.entity.BO.JsonObjectBO;
+import com.pandapay.utils.CodePayUtil;
+
+/**
+ * 支付回调
+ * @author gql
+ *
+ */
+@Controller
+@RequestMapping("/codePay/notify")
+@Scope(value="prototype")
+public class CodePayNotifyCotroller {
+	
+	/** 支付回调 */
+	@RequestMapping(value = "/notify.htm")
+	public @ResponseBody String show(HttpServletRequest request){
+		String params = StringUtil.stringNullHandle(request.getParameter("params"));
+		String sign = StringUtil.stringNullHandle(request.getParameter("sign"));
+		
+		LogUtil.printInfoLog("订单结果回调，接口返回参数params：" + params + "，签名sign：" + sign);
+		
+		//参数错误
+		if (!StringUtil.isNotNull(params) || !StringUtil.isNotNull(sign)) {
+			return "";
+		}
+		
+		CodePayUtil codePayUtil = new CodePayUtil();
+		JsonObjectBO jsonObjectBO = codePayUtil.receiveOrder(params, sign);
+		if(jsonObjectBO.getCode() == 1){
+			return "SC000000";
+		}else{
+			return "";
+		}
+	}
+	
+}

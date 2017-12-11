@@ -1,0 +1,88 @@
+.condition
+{
+    display: inline-block;
+    margin-left: 15px;
+    margin-bottom: 15px;
+}
+.query
+{
+    width: 180px;
+    height: 35px;
+    border-radius: 5px;
+    border: 1px solid #dddddd;
+    padding-left: 4px;
+}
+.startTime,.endTime
+{
+    width: 236px;
+    height: 35px;
+    border-radius: 5px;
+    border: 1px solid #dddddd;
+    padding-left: 4px;
+    margin-left: 4px;
+}
+.choose
+{
+    width: 150px;
+    height: 35px;
+    border-radius: 5px;
+    border: 1px solid #dddddd;
+}
+.ask
+{
+    margin-left: 15px;
+    width: 80px;
+    height: 35px;
+    border: none;
+    font-size: 16px;
+    text-align: center;
+    font-family: "Microsoft Yahei";
+    vertical-align: middle;
+    border-radius: 5px;
+    background-color: #febc5e;
+    cursor: pointer;
+    color: white;
+}
+.ask:hover
+{
+    background-color: #ffa92d;
+}
+.educe
+{
+    margin-left: 15px;
+    width: 80px;
+    height: 35px;
+    border: none;
+    font-size: 16px;
+    text-align: center;
+    font-family: "Microsoft Yahei";
+    vertical-align: middle;
+    border-radius: 5px;
+    background-color: #5bb559;
+    cursor: pointer;
+    color: white;
+}
+.educe:hover
+{
+    background-color: #2aa32a
+}
+.time
+{
+    width: 171px;
+}
+.account,.manager
+{
+    width: 170px;
+}
+.money
+{
+    width: 121px;
+}
+.mark
+{
+    width: 290px;
+}
+.ip
+{
+    width: 128px;
+}

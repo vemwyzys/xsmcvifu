@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC 
+		"-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pandapay.dao.impl.UserDaoImpl">
+	
+	<insert id="User_insertUser" parameterType="UserDO">
+	    INSERT INTO
+	    user_tab(userAccount, password, inviteUserId, inviteUserAccount, walletAmount, redPacketAmount,
+	    				singleLimitAmount, receiptRate, addTime, authenStatus, vipIdentity, vipOutTime, updateTime)
+	    VALUES(#{userAccount}, #{password}, #{inviteUserId}, #{inviteUserAccount}, #{walletAmount}, #{redPacketAmount},
+	    			#{singleLimitAmount}, #{receiptRate}, #{addTime}, #{authenStatus}, #{vipIdentity}, #{vipOutTime}, #{updateTime})
+	</insert>
+	
+	<select id="User_queryUserByUserId" parameterType="int" resultType="UserDO">
+        SELECT userId, userAccount, inviteUserId, inviteUserAccount, walletAmount, redPacketAmount,
+        			singleLimitAmount, receiptRate, addTime, authenStatus, vipIdentity, vipOutTime, updateTime
+        FROM user_tab
+        WHERE userId = #{userId}
+    </select>
+	
+	<select id="User_queryUserByUserAccount" parameterType="java.util.Map" resultType="UserDO">
+	    SELECT userId, userAccount, inviteUserId, inviteUserAccount, walletAmount, redPacketAmount,
+        			singleLimitAmount, receiptRate, addTime, authenStatus, vipIdentity, vipOutTime, updateTime
+	    FROM user_tab
+	    WHERE userAccount = #{userAccount}
+	</select>
+	
+	<select id="User_validataUserAccount" parameterType="java.util.Map" resultType="int">
+        SELECT COUNT(userId)
+        FROM user_tab
+        WHERE userAccount = #{userAccount}
+    </select>
+	
+	<select id="User_validateUserLogin" parameterType="java.util.Map" resultType="UserDO">
+	    SELECT userId, userAccount, inviteUserId, inviteUserAccount, walletAmount, redPacketAmount,
+        			singleLimitAmount, receiptRate, addTime, authenStatus, vipIdentity, vipOutTime, updateTime
+	    FROM user_tab
+	    WHERE userAccount = #{userAccount}
+	    	AND password = #{password}
+	</select>
+	
+	<update id="User_addWalletAmount" parameterType="java.util.Map">
+	    UPDATE user_tab
+	    SET walletAmount = walletAmount + #{addAmount}
+	    WHERE userId = #{userId}
+	</update>
+	
+	<update id="User_reduceWalletAmount" parameterType="java.util.Map">
+        UPDATE user_tab
+        SET walletAmount = walletAmount - #{reduceAmount}
+        WHERE userId = #{userId}
+        	AND walletAmount <![CDATA[ >= ]]> #{reduceAmount}
+    </update>
+    
+	<update id="User_addRedPacketAmount" parameterType="java.util.Map">
+	    UPDATE user_tab
+	    SET redPacketAmount = redPacketAmount + #{addAmount}
+	    WHERE userId = #{userId}
+	</update>
+	
+	<update id="User_reduceRedPacketAmount" parameterType="java.util.Map">
+        UPDATE user_tab
+        SET redPacketAmount = redPacketAmount - #{reduceAmount}
+        WHERE userId = #{userId}
+        	AND redPacketAmount <![CDATA[ >= ]]> #{reduceAmount}
+    </update>
+	
+	<update id="User_updateUserPassword" parameterType="java.util.Map">
+        UPDATE user_tab
+        SET password = #{newPassword}
+        WHERE userId = #{userId}
+        	AND password = #{oldPassword}
+    </update>
+    
+	<update id="User_updateUserPasswordModify" parameterType="java.util.Map">
+        UPDATE user_tab
+        SET password = #{newPassword}
+        WHERE userId = #{userId}
+    </update>
+    
+	<update id="User_updateAuthenStatus" parameterType="java.util.Map">
+        UPDATE user_tab
+        SET authenStatus = #{authenStatus}, updateTime = #{updateTime}
+        WHERE userId = #{userId}
+    </update>
+    
+	<update id="User_updateVipIdentity" parameterType="java.util.Map">
+        UPDATE user_tab
+        SET vipIdentity = #{vipIdentity}, updateTime = #{updateTime}, receiptRate = #{receiptRate}, vipOutTime = #{vipOutTime}
+        WHERE userId = #{userId}
+    </update>
+    
+	<update id="User_updatePayInfo" parameterType="java.util.Map">
+        UPDATE user_tab
+        SET singleLimitAmount = #{singleLimitAmount}, receiptRate = #{receiptRate}, updateTime = #{updateTime}
+        WHERE userId = #{userId}
+    </update>
+	
+	<select id="User_queryUserTotalOfBack" parameterType="java.util.Map" resultType="int">
+	    SELECT COUNT(userTab.userId)
+	    FROM user_tab AS userTab
+	    	LEFT JOIN user_authen_max_userAuthenId_view AS userMaxAuthenView ON userTab.userId = userMaxAuthenView.userId
+	    	LEFT JOIN user_authen_tab AS userAuthenTab ON userAuthenTab.userAuthenId = userMaxAuthenView.userAuthenId
+	    <where>
+            <if test="authenStatus > -1">
+                AND userTab.authenStatus = #{authenStatus}
+            </if>
+            <if test="vipIdentity > -1">
+                AND userTab.vipIdentity = #{vipIdentity}
+            </if>
+	        <if test="userAccount != null and userAccount != '' ">
+	            AND userTab.userAccount LIKE CONCAT('%', #{userAccount}, '%')
+	        </if>
+	        <if test="inviteUserAccount != null and inviteUserAccount != '' ">
+                AND userTab.inviteUserAccount LIKE CONCAT('%', #{inviteUserAccount}, '%')
+            </if>
+            <if test="idCard != null and idCard != '' ">
+                AND userAuthenTab.idCard LIKE CONCAT('%', #{idCard}, '%')
+            </if>
+            <if test="bankCard != null and bankCard != '' ">
+                AND userAuthenTab.bankCard LIKE CONCAT('%', #{bankCard}, '%')
+            </if>
+            <if test="startTime != null">
+                AND userTab.addTime <![CDATA[ > ]]> #{startTime}
+            </if>
+            <if test="endTime != null">
+                AND userTab.addTime <![CDATA[ < ]]> #{endTime}
+            </if>
+	    </where>
+	</select>
+	
+	<select id="User_queryUserListOfBack" parameterType="java.util.Map" resultType="UserBackVO">
+        SELECT userTab.userId AS userId, userTab.userAccount AS userAccount, userTab.inviteUserAccount AS inviteUserAccount, userTab.addTime AS addTime,
+        			userTab.walletAmount AS walletAmount, userTab.redPacketAmount AS redPacketAmount, userTab.singleLimitAmount  AS singleLimitAmount,
+        			userTab.receiptRate  AS receiptRate, userTab.authenStatus  AS authenStatus, userTab.vipIdentity AS vipIdentity, userTab.vipOutTime AS vipOutTime,
+        			
+        			userAuthenTab.contactsName AS contactsName, userAuthenTab.address AS address, userAuthenTab.idCard AS idCard,
+        			userAuthenTab.bankCard AS bankCard, userAuthenTab.storeName AS storeName
+        
+        FROM user_tab AS userTab
+	    	LEFT JOIN user_authen_max_userAuthenId_view AS userMaxAuthenView ON userTab.userId = userMaxAuthenView.userId
+	    	LEFT JOIN user_authen_tab AS userAuthenTab ON userAuthenTab.userAuthenId = userMaxAuthenView.userAuthenId
+	    <where>
+            <if test="authenStatus > -1">
+                AND userTab.authenStatus = #{authenStatus}
+            </if>
+            <if test="vipIdentity > -1">
+                AND userTab.vipIdentity = #{vipIdentity}
+            </if>
+	        <if test="userAccount != null and userAccount != '' ">
+	            AND userTab.userAccount LIKE CONCAT('%', #{userAccount}, '%')
+	        </if>
+	        <if test="inviteUserAccount != null and inviteUserAccount != '' ">
+                AND userTab.inviteUserAccount LIKE CONCAT('%', #{inviteUserAccount}, '%')
+            </if>
+            <if test="idCard != null and idCard != '' ">
+                AND userAuthenTab.idCard LIKE CONCAT('%', #{idCard}, '%')
+            </if>
+            <if test="bankCard != null and bankCard != '' ">
+                AND userAuthenTab.bankCard LIKE CONCAT('%', #{bankCard}, '%')
+            </if>
+            <if test="startTime != null">
+                AND userTab.addTime <![CDATA[ > ]]> #{startTime}
+            </if>
+            <if test="endTime != null">
+                AND userTab.addTime <![CDATA[ < ]]> #{endTime}
+            </if>
+	    </where>
+        ORDER BY userTab.addTime DESC
+        LIMIT #{startNumber}, #{pageSize}
+    </select>
+    
+    <select id="User_queryOutVipList" parameterType="java.util.Map" resultType="UserDO">
+        SELECT userId, userAccount, inviteUserId, inviteUserAccount, walletAmount, redPacketAmount,
+        			singleLimitAmount, receiptRate, addTime, authenStatus, vipIdentity, vipOutTime
+        FROM user_tab
+        WHERE vipIdentity = 1
+        	AND vipOutTime <![CDATA[ < ]]> #{curTime}
+        ORDER BY vipOutTime DESC
+        LIMIT #{pageSize}
+    </select>
+	
+</mapper>

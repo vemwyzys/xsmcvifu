@@ -1,0 +1,151 @@
+.top
+{
+    background-color: #eeeeee;
+    width: 1195px;
+    margin-top: 10px;
+    padding-top: 15px;
+    color: #666666;
+    font-size: 16px;
+    font-family: "Microsoft Yahei";
+    position: relative;
+}
+.condition
+{
+    display: inline-block;
+    margin-left: 15px;
+    margin-bottom: 15px;
+}
+.query
+{
+    width: 200px;
+    height: 35px;
+    border-radius: 5px;
+    border: 1px solid #dddddd;
+    padding-left: 4px;
+}
+.ask
+{
+    margin-left: 15px;
+    width: 80px;
+    height: 35px;
+    border: none;
+    font-size: 16px;
+    text-align: center;
+    font-family: "Microsoft Yahei";
+    vertical-align: middle;
+    border-radius: 5px;
+    background-color: #febc5e;
+    cursor: pointer;
+    color: white;
+}
+.ask:hover
+{
+    background-color: #ffa92d;
+}
+.account
+{
+    width: 250px;
+}
+.role
+{
+    width: 500px;
+}
+.time
+{
+    width: 172px;
+}
+.operate
+{
+    width: 224px;
+}
+.delete
+{
+    margin-left: 10px;
+    width: 40px;
+    border: none;
+    background-color: transparent;
+    color: #f05634;
+    cursor: pointer;
+    text-align: center;
+}
+.delete:hover
+{
+    color:#df3b17;
+}
+.change
+{
+    width: 55px;
+    text-align: center;
+    border: none;
+    background-color: transparent;
+    color: #febc5e;
+    cursor: pointer;
+}
+.change:hover
+{
+    color: #ffa92d;
+}
+.reset
+{
+    margin-left: 10px;
+    width: 55px;
+    text-align: center;
+    border: none;
+    background-color: transparent;
+    color: #5bb559;
+    cursor: pointer;
+}
+.reset:hover
+{
+    color: #2aa32a;
+}
+.changePassword
+{
+    margin-left: 10px;
+    width: 55px;
+    text-align: center;
+    border: none;
+    background-color: transparent;
+    color: #5ccae8;
+    cursor: pointer;
+}
+.changePassword:hover
+{
+    color: #38b1d6;
+}
+
+.add_pop,.change_pop,.changePassword_pop,.reset_pop,.delete_pop
+{
+    display:none;
+    z-index:999;
+}
+.mask_tips
+{
+    padding: 20px 15px;
+    text-align: left;
+    color: #666666;
+    font-size: 16px;
+    word-break: break-all;
+}
+.entry_tips
+{
+    padding: 10px 0 0 0;
+    text-align: left;
+    color: #666666;
+    font-size: 14px;
+    position: relative;
+}
+.sign
+{
+    width: 80px;
+    margin-left: 15px;
+    display: inline-block;
+}
+.sign span
+{
+    color: red;
+}
+.Button
+{
+    margin-top: 15px;
+}

@@ -1,0 +1,656 @@
+package com.pandapay.controller.back;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.sql.Timestamp;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.alibaba.fastjson.JSONObject;
+import com.iqmkj.utils.DateUtil;
+import com.iqmkj.utils.FileWriteLocalUtil;
+import com.iqmkj.utils.IpAddressUtil;
+import com.iqmkj.utils.LogUtil;
+import com.iqmkj.utils.StringUtil;
+import com.pandapay.entity.BO.BackerSessionBO;
+import com.pandapay.entity.BO.JsonObjectBO;
+import com.pandapay.entity.DO.UserAuthenDO;
+import com.pandapay.entity.DO.UserDO;
+import com.pandapay.entity.VO.UserBackVO;
+import com.pandapay.interceptor.BackerWebInterceptor;
+import com.pandapay.service.IUserAuthenService;
+import com.pandapay.service.IUserService;
+
+import config.FileUrlConfig;
+
+/**
+ * 用户账号
+ * @author zjl
+ *
+ */
+@Controller
+@Scope("prototype")
+@RequestMapping("/backerWeb/backerUserAccount")
+public class BackerUserAccountController {
+	
+	/** 用户服务*/
+	@Autowired
+	private IUserService userService;
+	
+	/** 用户认证服务*/
+	@Autowired
+	private IUserAuthenService userAuthenService;
+	
+	/** 查询数据*/
+	public void showList(HttpServletRequest request){
+		String userAccount = StringUtil.stringNullHandle(request.getParameter("userAccount"));
+		String inviteUserAccount = StringUtil.stringNullHandle(request.getParameter("inviteUserAccount"));
+		String idCard = StringUtil.stringNullHandle(request.getParameter("idCard"));
+		String bankCard = StringUtil.stringNullHandle(request.getParameter("bankCard"));
+		String authenStatusStr = StringUtil.stringNullHandle(request.getParameter("authenStatus"));
+		String startTimeStr = StringUtil.stringNullHandle(request.getParameter("startTime"));
+		String endTimeStr = StringUtil.stringNullHandle(request.getParameter("endTime"));
+		String vipIdentityStr = StringUtil.stringNullHandle(request.getParameter("vipIdentity"));
+		
+		String pageNumberStr = StringUtil.stringNullHandle(request.getParameter("pageNumber"));
+		
+		int pageNumber = 0;
+		if (StringUtil.isNotNull(pageNumberStr)) {
+			pageNumber  = Integer.parseInt(pageNumberStr);
+		}
+		
+		int authenStatus = -1;
+		if(StringUtil.isNotNull(authenStatusStr)){
+			authenStatus = Integer.parseInt(authenStatusStr);
+		}
+		
+		Timestamp startTime = null;
+		if(StringUtil.isNotNull(startTimeStr)){
+			startTime = Timestamp.valueOf(startTimeStr);
+		}
+		
+		Timestamp endTime = null;
+		if(StringUtil.isNotNull(endTimeStr)){
+			endTime = Timestamp.valueOf(endTimeStr);
+		}
+		
+		int vipIdentity = -1;
+		if(StringUtil.isNotNull(vipIdentityStr)){
+			vipIdentity = Integer.parseInt(vipIdentityStr);
+		}
+		
+		//单页数据条数
+		int pageSize = 20;
+		long totalNumber = userService.queryUserTotalOfBack(userAccount, inviteUserAccount, idCard, bankCard, authenStatus, vipIdentity, startTime, endTime);
+		//总页码数
+		int totalPageNumber = (int) (totalNumber/1.0/pageSize);
+		//若页码总数恰为页码大小的整数倍，则总数减一
+		if (totalNumber > 0 && Math.ceil(totalNumber/1.0/pageSize) == totalPageNumber) {
+			totalPageNumber--;
+		}
+		if(pageNumber > totalPageNumber){
+			pageNumber = totalPageNumber;
+		}
+		
+		List<UserBackVO> userList = null;
+		if(totalNumber > 0){
+			userList = userService.queryUserListOfBack(userAccount, inviteUserAccount, idCard, bankCard, authenStatus, vipIdentity, startTime, endTime, pageNumber, pageSize);
+		}
+		
+		request.setAttribute("userAccount", userAccount);
+		request.setAttribute("inviteUserAccount", inviteUserAccount);
+		request.setAttribute("idCard", idCard);
+		request.setAttribute("bankCard", bankCard);
+		request.setAttribute("authenStatus", authenStatus);
+		request.setAttribute("vipIdentity", vipIdentity);
+		request.setAttribute("startTime", startTimeStr);
+		request.setAttribute("endTime", endTimeStr);
+		
+		request.setAttribute("totalNumber", totalNumber);
+		request.setAttribute("pageNumber", pageNumber);
+		request.setAttribute("totalPageNumber", totalPageNumber);
+		
+		request.setAttribute("userList", userList);
+		//添加当前页面，页面权限码
+		request.getSession().setAttribute("backer_pagePowerId", 121000);
+	}
+	
+	/** 展示页面*/
+	@RequestMapping(value = "show.htm")
+	public String show(HttpServletRequest request){
+		boolean result = BackerWebInterceptor.validatePower(request, 121001);
+		if (!result) {
+			request.setAttribute("code", 2);
+			request.setAttribute("message", "您没有该权限！");
+			request.getSession().setAttribute("backer_pagePowerId", 0);
+			return "page/back/index";
+		}
+		
+		showList(request);
+		request.setAttribute("code", 1);
+		request.setAttribute("message", "查询成功！");
+		
+		return "page/back/userAccount";
+	}
+	
+	/** 增加钱包金额*/
+	@RequestMapping(value = "addWalletAmount.htm", method = RequestMethod.POST)
+	public String addWalletAmount(HttpServletRequest request){
+		boolean result = BackerWebInterceptor.validatePower(request, 121002);
+		if (!result) {
+			showList(request);
+			request.setAttribute("code", 2);
+			request.setAttribute("message", "您没有该权限！");
+			request.getSession().setAttribute("backer_pagePowerId", 0);
+			return "page/back/index";
+		}
+		
+		BackerSessionBO backer = BackerWebInterceptor.getBacker(request);
+		if(backer == null){
+			showList(request);
+			request.setAttribute("code", -1);
+			request.setAttribute("message", "参数错误！");
+			return "page/back/userAccount";
+		}
+		
+		String userIdStr = StringUtil.stringNullHandle(request.getParameter("userId"));
+		String addAmountStr = StringUtil.stringNullHandle(request.getParameter("addAmount"));
+		String remarks = StringUtil.stringNullHandle(request.getParameter("remarks"));
+		
+		if(!StringUtil.isNotNull(userIdStr) || !StringUtil.isNotNull(addAmountStr) || !StringUtil.isNotNull(remarks)){
+			showList(request);
+			request.setAttribute("code", -1);
+			request.setAttribute("message", "参数错误！");
+			return "page/back/userAccount";
+		}
+		
+		int userId = 0;
+		double addAmount = 0;
+		try {
+			userId = Integer.parseInt(userIdStr);
+			addAmount = Double.parseDouble(addAmountStr);
+		} catch (NumberFormatException e) {
+			showList(request);
+			LogUtil.printErrorLog(e);
+			request.setAttribute("code", -1);
+			request.setAttribute("message", "参数错误！");
+			return "page/back/userAccount";
+		}
+		
+		if(addAmount <= 0){
+			showList(request);
+			request.setAttribute("code", -1);
+			request.setAttribute("message", "输入不合法！");
+			return "page/back/userAccount";
+		}
+		
+		boolean flag = userService.addWalletAmountOfBack(userId, addAmount, remarks, backer.getBackerId(), backer.getBackerAccount(), IpAddressUtil.getIpAddress(request));
+		
+		if(flag == true){
+			request.setAttribute("code", -1);
+			request.setAttribute("message", "操作成功！");
+		}else{
+			request.setAttribute("code", -1);
+			request.setAttribute("message", "操作失败！");
+		}
+		
+		showList(request);
+		return "page/back/userAccount";
+	}
+	
+	/** 减少钱包金额*/
+	@RequestMapping(value = "reduceWalletAmount.htm", method = RequestMethod.POST)
+	public String reduceWalletAmount(HttpServletRequest request){
+		boolean result = BackerWebInterceptor.validatePower(request, 121003);
+		if (!result) {
+			showList(request);
+			request.setAttribute("code", 2);
+			request.setAttribute("message", "您没有该权限！");
+			request.getSession().setAttribute("backer_pagePowerId", 0);
+			return "page/back/index";
+		}
+		
+		BackerSessionBO backer = BackerWebInterceptor.getBacker(request);
+		if(backer == null){
+			showList(request);
+			request.setAttribute("code", -1);
+			request.setAttribute("message", "参数错误！");
+			return "page/back/userAccount";
+		}
+		
+		String userIdStr = StringUtil.stringNullHandle(request.getParameter("userId"));
+		String reduceAmountStr = StringUtil.stringNullHandle(request.getParameter("reduceAmount"));
+		String remarks = StringUtil.stringNullHandle(request.getParameter("remarks"));
+		
+		if(!StringUtil.isNotNull(userIdStr) || !StringUtil.isNotNull(reduceAmountStr) || !StringUtil.isNotNull(remarks)){
+			showList(request);
+			request.setAttribute("code", -1);
+			request.setAttribute("message", "参数错误！");
+			return "page/back/userAccount";
+		}
+		
+		int userId = 0;
+		double reduceAmount = 0;
+		try {
+			userId = Integer.parseInt(userIdStr);
+			reduceAmount = Double.parseDouble(reduceAmountStr);
+		} catch (NumberFormatException e) {
+			showList(request);
+			LogUtil.printErrorLog(e);
+			request.setAttribute("code", -1);
+			request.setAttribute("message", "参数错误！");
+			return "page/back/userAccount";
+		}
+		
+		if(reduceAmount <= 0){
+			showList(request);
+			request.setAttribute("code", -1);
+			request.setAttribute("message", "输入不合法！");
+			return "page/back/userAccount";
+		}
+		
+		boolean flag = userService.reduceWalletAmountOfBack(userId, reduceAmount, remarks, backer.getBackerId(), backer.getBackerAccount(), IpAddressUtil.getIpAddress(request));
+		if(flag == true){
+			request.setAttribute("code", -1);
+			request.setAttribute("message", "操作成功！");
+		}else{
+			request.setAttribute("code", -1);
+			request.setAttribute("message", "操作失败！");
+		}
+		
+		showList(request);
+		return "page/back/userAccount";
+	}
+	
+	/** 调整交易信息*/
+	@RequestMapping(value = "adjustDealInfo.htm", method = RequestMethod.POST)
+	public String adjustDealInfo(HttpServletRequest request){
+		
+		boolean result = BackerWebInterceptor.validatePower(request, 121004);
+		if (!result) {
+			showList(request);
+			request.setAttribute("code", 2);
+			request.setAttribute("message", "您没有该权限！");
+			request.getSession().setAttribute("backer_pagePowerId", 0);
+			return "page/back/index";
+		}
+		
+		String userIdStr = StringUtil.stringNullHandle(request.getParameter("userId"));
+		String singleLimitAmountStr = StringUtil.stringNullHandle(request.getParameter("singleLimitAmount"));
+		String receiptRateStr = StringUtil.stringNullHandle(request.getParameter("receiptRate"));
+		
+		if(!StringUtil.isNotNull(userIdStr) || !StringUtil.isNotNull(singleLimitAmountStr) || !StringUtil.isNotNull(receiptRateStr)){
+			showList(request);
+			request.setAttribute("code", -1);
+			request.setAttribute("message", "参数错误！");
+			return "page/back/userAccount";
+		}
+		
+		int userId = Integer.parseInt(userIdStr);
+		double singleLimitAmount = 0;
+		double receiptRate = 0;
+		try {
+			singleLimitAmount = Double.parseDouble(singleLimitAmountStr);
+			receiptRate = Double.parseDouble(receiptRateStr);
+		} catch (NumberFormatException e) {
+			showList(request);
+			LogUtil.printErrorLog(e);
+			request.setAttribute("code", -1);
+			request.setAttribute("message", "参数错误！");
+			return "page/back/userAccount";
+		}
+		
+		if(singleLimitAmount <= 0 || receiptRate <= 0){
+			showList(request);
+			request.setAttribute("code", -1);
+			request.setAttribute("message", "输入不合法！");
+			return "page/back/userAccount";
+		}
+		
+		Timestamp updateTime = new Timestamp(System.currentTimeMillis());
+		boolean flag = userService.updatePayInfo(userId, singleLimitAmount, receiptRate, updateTime);
+		if(flag == true){
+			request.setAttribute("code", -1);
+			request.setAttribute("message", "操作成功！");
+		}else{
+			request.setAttribute("code", -1);
+			request.setAttribute("message", "操作失败！");
+		}
+		
+		showList(request);
+		return "page/back/userAccount";
+	}
+	
+	/** 修改身份信息*/
+	@RequestMapping(value = "modifyVipIdentity.htm", method = RequestMethod.POST)
+	public String modifyVipIdentity(HttpServletRequest request){
+		boolean result = BackerWebInterceptor.validatePower(request, 121009);
+		if (!result) {
+			showList(request);
+			request.setAttribute("code", 2);
+			request.setAttribute("message", "您没有该权限！");
+			request.getSession().setAttribute("backer_pagePowerId", 0);
+			return "page/back/index";
+		}
+		
+		String userIdStr = StringUtil.stringNullHandle(request.getParameter("userId"));
+		String vipIdentityStr = StringUtil.stringNullHandle(request.getParameter("modifyVipIdentity_vipIdentity"));
+		String vipOutTimeStr = StringUtil.stringNullHandle(request.getParameter("vipOutTime"));
+		
+		if(!StringUtil.isNotNull(userIdStr) || !StringUtil.isNotNull(vipIdentityStr) || !StringUtil.isNotNull(vipOutTimeStr)){
+			showList(request);
+			request.setAttribute("code", -1);
+			request.setAttribute("message", "参数错误！");
+			return "page/back/userAccount";
+		}
+		
+		int userId = Integer.parseInt(userIdStr);
+		int vipIdentity = Integer.parseInt(vipIdentityStr);
+		
+		Timestamp vipOutTime = Timestamp.valueOf(vipOutTimeStr);
+		
+		boolean updateVipIdentity = userService.updateVipIdentity(userId, vipIdentity, new Timestamp(DateUtil.getCurrentTimeMillis()), vipOutTime);
+		if(updateVipIdentity == false){
+			request.setAttribute("code", -1);
+			request.setAttribute("message", "操作失败！");
+		}else{
+			request.setAttribute("code", -1);
+			request.setAttribute("message", "操作成功！");
+		}
+		
+		showList(request);
+		return "page/back/userAccount";
+	}
+	
+	/** 打开实名认证页面*/
+	@RequestMapping(value = "openRealNameConfirm.htm")
+	public String openRealNameConfirm(HttpServletRequest request){
+		
+		boolean result = BackerWebInterceptor.validatePower(request, 121005);
+		if (!result) {
+			request.setAttribute("code", 2);
+			request.setAttribute("message", "您没有该权限！");
+			request.getSession().setAttribute("backer_pagePowerId", 0);
+			return "page/back/index";
+		}
+		
+		showList(request);
+		
+		String userIdStr = StringUtil.stringNullHandle(request.getParameter("userId"));
+		if(!StringUtil.isNotNull(userIdStr)){
+			request.setAttribute("code", -1);
+			request.setAttribute("message", "参数错误！");
+			return "page/back/userAccount";
+		}
+		
+		int userId = Integer.parseInt(userIdStr);
+		
+		UserAuthenDO userAuthenDO = userAuthenService.queryNewAuthen(userId);
+		UserDO userDo = userService.queryUserByUserId(userId);
+		
+		if(userDo == null){
+			request.setAttribute("code", -1);
+			request.setAttribute("message", "该用户不存在！");
+			return "page/back/userAccount";
+		}
+		
+		if(userAuthenDO == null){
+			request.setAttribute("code", -1);
+			request.setAttribute("message", "该用户尚未提交实名认证！");
+			return "page/back/userAccount";
+		}
+		
+		request.setAttribute("code", 1);
+		request.setAttribute("message", "操作成功！");
+		request.setAttribute("user", userAuthenDO);
+		request.setAttribute("userDo", userDo);
+		
+		return "page/back/realNameConfirm";
+	}
+	
+	/** 实名认证审核*/
+	@RequestMapping(value = "realNameConfirm.htm", method = RequestMethod.POST)
+	public String realNameConfirm(HttpServletRequest request){
+		
+		String userAuthenIdStr = StringUtil.stringNullHandle(request.getParameter("userAuthenId"));
+		String authenStatusStr = StringUtil.stringNullHandle(request.getParameter("authenStatus"));
+		if(!StringUtil.isNotNull(userAuthenIdStr) || !StringUtil.isNotNull(authenStatusStr)){
+			showList(request);
+			request.setAttribute("code", -1);
+			request.setAttribute("message", "参数错误！");
+			return "page/back/userAccount";
+		}
+		
+		int userAuthenId = Integer.parseInt(userAuthenIdStr);
+		int authenStatus = Integer.parseInt(authenStatusStr);
+		
+		boolean result = BackerWebInterceptor.validatePower(request, 121005 + authenStatus);
+		if (!result) {
+			request.setAttribute("code", 2);
+			request.setAttribute("message", "您没有该权限！");
+			request.getSession().setAttribute("backer_pagePowerId", 0);
+			return "page/back/index";
+		}
+		
+		boolean updateAuthenStatus = false;
+		if(authenStatus == 1){
+			//认证通过
+			updateAuthenStatus = userAuthenService.updateAuthenSuccess(userAuthenId, "");
+		}else if(authenStatus == 2){
+			//认证失败
+			updateAuthenStatus = userAuthenService.updateAuthenFail(userAuthenId, "");
+		}
+		
+		if(updateAuthenStatus == true){
+			request.setAttribute("code", -2);
+			request.setAttribute("message", "操作成功！");
+		}else{
+			request.setAttribute("code", -2);
+			request.setAttribute("message", "操作失败！");
+		}
+		
+		return "page/back/realNameConfirm";
+	}
+	
+	/** 导出数据*/
+	@RequestMapping(value = "exportData", method = RequestMethod.POST)
+	public @ResponseBody JsonObjectBO exportData(HttpServletRequest request){
+		JsonObjectBO responseJson = new JsonObjectBO();
+		
+		boolean result = BackerWebInterceptor.validatePower(request, 121008);
+		if(!result){
+			responseJson.setCode(2);
+			responseJson.setMessage("您没有该权限");
+			return responseJson;
+		}
+		
+		String userAccount = StringUtil.stringNullHandle(request.getParameter("userAccount"));
+		String inviteUserAccount = StringUtil.stringNullHandle(request.getParameter("inviteUserAccount"));
+		String idCard = StringUtil.stringNullHandle(request.getParameter("idCard"));
+		String bankCard = StringUtil.stringNullHandle(request.getParameter("bankCard"));
+		String authenStatusStr = StringUtil.stringNullHandle(request.getParameter("authenStatus"));
+		String startTimeStr = StringUtil.stringNullHandle(request.getParameter("startTime"));
+		String endTimeStr = StringUtil.stringNullHandle(request.getParameter("endTime"));
+		String vipIdentityStr = StringUtil.stringNullHandle(request.getParameter("vipIdentity"));
+		
+		int authenStatus = -1;
+		if(StringUtil.isNotNull(authenStatusStr)){
+			authenStatus = Integer.parseInt(authenStatusStr);
+		}
+		
+		Timestamp startTime = null;
+		if(StringUtil.isNotNull(startTimeStr)){
+			startTime = Timestamp.valueOf(startTimeStr);
+		}
+		
+		Timestamp endTime = null;
+		if(StringUtil.isNotNull(endTimeStr)){
+			endTime = Timestamp.valueOf(endTimeStr);
+		}
+		
+		int vipIdentity = -1;
+		if(StringUtil.isNotNull(vipIdentityStr)){
+			vipIdentity = Integer.parseInt(vipIdentityStr);
+		}
+		
+		//单页数据条数
+		int pageNumber = 0;
+		int pageSize = 10000;
+		long totalNumber = userService.queryUserTotalOfBack(userAccount, inviteUserAccount, idCard, bankCard, authenStatus, vipIdentity, startTime, endTime);
+		//总页码数
+		int totalPageNumber = (int) (totalNumber/1.0/pageSize);
+		//若页码总数恰为页码大小的整数倍，则总数减一
+		if (totalNumber > 0 && Math.ceil(totalNumber/1.0/pageSize) == totalPageNumber) {
+			totalPageNumber--;
+		}
+		
+		List<UserBackVO> userList = null;
+		if(totalNumber > 0){
+			userList = userService.queryUserListOfBack(userAccount, inviteUserAccount, idCard, bankCard, authenStatus, vipIdentity, startTime, endTime, pageNumber, pageSize);
+		}
+		
+		XSSFWorkbook workBook = null;
+		OutputStream stream = null;
+		
+		try {
+			workBook = new XSSFWorkbook();
+			XSSFSheet sheet1 = workBook.createSheet("用户账户记录");
+			
+			//创建第一行表头
+			XSSFRow row = sheet1.createRow(0);
+			XSSFCell cell = row.createCell(0);
+			cell.setCellValue("账号");
+			cell = row.createCell(1);
+			cell.setCellValue("推荐人");
+			cell = row.createCell(2);
+			cell.setCellValue("注册");
+			cell = row.createCell(3);
+			cell.setCellValue("钱包");
+			cell = row.createCell(4);
+			cell.setCellValue("红包");
+			cell = row.createCell(5);
+			cell.setCellValue("联系人");
+			cell = row.createCell(6);
+			cell.setCellValue("电话");
+			cell = row.createCell(7);
+			cell.setCellValue("地址");
+			cell = row.createCell(8);
+			cell.setCellValue("身份证号");
+			cell = row.createCell(9);
+			cell.setCellValue("结算账户");
+			cell = row.createCell(10);
+			cell.setCellValue("单笔限额");
+			cell = row.createCell(11);
+			cell.setCellValue("收款费率");
+			cell = row.createCell(12);
+			cell.setCellValue("店铺名称");
+			cell = row.createCell(13);
+			cell.setCellValue("认证状态");
+			
+			int i = 1;
+			for(UserBackVO userBackVO : userList){
+				XSSFRow row2 = sheet1.createRow(i);
+	            //循环写入列数据     
+	            for (int j = 0; j <= 14; j++) 
+	            {
+	            	cell = row2.createCell(j);    
+	            	switch (j) 
+	            	{
+						case 0:
+							cell.setCellValue(userBackVO.getUserAccount());
+							break;
+						case 1:
+							cell.setCellValue(userBackVO.getInviteUserAccount());
+							break;
+						case 2:
+							cell.setCellValue(DateUtil.longToTimeStr(userBackVO.getAddTime().getTime(), DateUtil.dateFormat2));
+							break;
+						case 3:
+							cell.setCellValue(userBackVO.getWalletAmount());
+							break;
+						case 4:
+							cell.setCellValue(userBackVO.getRedPacketAmount());
+							break;
+						case 5:
+							cell.setCellValue(userBackVO.getContactsName());
+							break;
+						case 6:
+							cell.setCellValue(userBackVO.getUserAccount());
+							break;
+						case 7:
+							cell.setCellValue(userBackVO.getAddress());
+							break;
+						case 8:
+							cell.setCellValue(userBackVO.getIdCard());
+							break;
+						case 9:
+							cell.setCellValue(userBackVO.getBankCard());
+							break;
+						case 10:
+							cell.setCellValue(userBackVO.getSingleLimitAmount());
+							break;
+						case 11:
+							cell.setCellValue(userBackVO.getReceiptRate());
+							break;
+						case 12:
+							cell.setCellValue(userBackVO.getStoreName());
+							break;
+						case 13:
+							if(userBackVO.getAuthenStatus() == 0){
+								cell.setCellValue("待认证");	
+							}else if(userBackVO.getAuthenStatus() == 1){
+								cell.setCellValue("认证通过");	
+							}else if(userBackVO.getAuthenStatus() == 2){
+								cell.setCellValue("认证失败");	
+							}
+						
+							break;
+						default:
+							break;
+					}
+	            }
+	            i++;
+			}
+			String fileName = "orderRecord.xlsx";
+			
+			stream = new ByteArrayOutputStream();
+			workBook.write(stream);
+			String downLoadUrl = FileWriteLocalUtil.SaveInputStreamToFile(new ByteArrayInputStream(((ByteArrayOutputStream) stream).toByteArray()), FileUrlConfig.file_local_excel_url, fileName);
+			JSONObject data = new JSONObject();
+			data.put("url", downLoadUrl);
+			
+			responseJson.setCode(1);
+			responseJson.setMessage("导出成功");
+			responseJson.setData(data);
+			
+		} catch (Exception e) {
+			LogUtil.printErrorLog(e);
+			
+			responseJson.setCode(2);
+			responseJson.setMessage("导出失败，请重试");
+		} finally {
+			try {
+				workBook.close();
+				stream.close();
+			} catch (IOException e) {
+				LogUtil.printErrorLog(e);
+			}
+		}
+		return responseJson;
+	}
+
+}

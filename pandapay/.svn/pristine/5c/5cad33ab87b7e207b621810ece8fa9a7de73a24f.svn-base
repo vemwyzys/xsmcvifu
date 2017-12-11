@@ -1,0 +1,148 @@
+.basicHeader
+{
+    margin:0 auto;
+    width: 1400px;
+    height: 90px;
+    line-height: 90px;
+    font-size: 28px;
+    color: #333333;
+}
+.basicLogo
+{
+    vertical-align: middle;
+    margin-right: 30px;
+    height: 70px;
+}
+.content
+{
+    margin: 0 auto;
+    width: 1400px;
+    min-height: 80% !important;
+}
+.basicContent
+{
+    height: 600px;
+    width:100%;
+    min-width: 1400px;
+    background-image: url("../../image/back/bg.jpg");
+    background-repeat: no-repeat;
+}
+.content
+{
+    height: 600px;
+}
+
+/*-----login-----*/
+.login
+{
+    float: right;
+    display: inline-block;
+    margin-top: 80px;
+    margin-right: 2%;
+    width: 430px;
+    min-height: 370px;
+    max-height: 440px;
+    border-radius: 5px;
+    -webkit-box-shadow: 2px 2px 8px rgba(0,0,0,0.4);
+    box-shadow: 2px 2px 8px rgba(0,0,0,0.4);
+    background-color: rgba(255,255,255,0.6);
+}
+.usersLogin
+{
+    margin: 30px 0 30px 40px;
+    text-align: left;
+    font-size: 20px;
+    color: #666666;
+}
+
+.loginUsers
+{
+    width: 350px;
+    height: 50px;
+    line-height: 50px;
+    font-size: 16px;
+    color: #cccccc;
+    font-family: "Microsoft Yahei";
+    border: 1px solid #cccccc;
+    background-color: white;
+    margin-left: 40px;
+    margin-bottom: 20px;
+    opacity: 0.8;
+}
+p.loginUsers img,p.password img
+{
+    margin-left: 20px;
+    margin-right: 10px;
+    vertical-align: middle;
+}
+.txt
+{
+    height: 35px;
+    width: 285px;
+    font-size: 16px;
+    border: none;
+    color: #666666;
+    outline: none;
+}
+.password
+{
+    font-size: 16px;
+    color: #cccccc;
+    font-family: "Microsoft Yahei";
+    width: 350px;
+    height: 50px;
+    line-height: 50px;
+    border: 1px solid  #cccccc;
+    background-color: white;
+    margin-left: 40px;
+    margin-bottom: 9px;
+    opacity: 0.8;
+}
+.loginCheck
+{
+    margin-left: 40px;
+    margin-top:9px;
+    font-size: 16px;
+    padding-bottom: 15px;
+    color: #666666;
+    height: 50px;
+    font-family: "Microsoft Yahei";
+}
+.checkCode
+{
+    font-size: 16px;
+    height: 50px;
+    width: 177px;
+    padding-left: 20px;
+    border: 1px solid lightgray;
+    opacity: 0.8;
+}
+.loginCheck img
+{
+    width: 140px;
+    height: 52px;
+    vertical-align:bottom;
+    margin-left: 9px;
+    cursor: pointer;
+    opacity: 0.8;
+}
+.loginButton
+{
+    margin-top: 10px;
+    margin-bottom: 40px;
+    width: 350px;
+    height: 45px;
+    border-radius: 5px;
+    text-align: center;
+    border: none;
+    background-color: #f05634;
+    margin-left: 40px;
+    font-size: 18px;
+    font-family: "Microsoft Yahei";
+    color: white;
+    cursor: pointer;
+}
+.loginButton:hover
+{
+    background-color: #df3b17;
+}

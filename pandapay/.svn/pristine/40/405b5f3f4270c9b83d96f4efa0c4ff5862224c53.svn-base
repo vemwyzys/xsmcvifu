@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC 
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pandapay.dao.impl.UserOrderTakeCashDaoImpl">
+	
+	<insert id="UserOrderTakeCash_insertTakeCash" parameterType="UserOrderTakeCashDO">
+	    INSERT INTO
+	    user_order_takecash_tab(orderNo, userId, userAccount, takeCashAmount, takeCashWay, takeCashAccount, addTime, takeCashStatus, remarks, updateTime)
+	    VALUES(#{orderNo}, #{userId}, #{userAccount}, #{takeCashAmount}, #{takeCashWay}, #{takeCashAccount}, #{addTime}, #{takeCashStatus}, #{remarks}, #{updateTime})
+	</insert>
+	
+	<update id="UserOrderTakeCash_updateTakeCashStatus" parameterType="java.util.Map">
+        UPDATE user_order_takecash_tab
+        SET takeCashStatus = #{takeCashStatus}, remarks = #{remarks}, updateTime = #{updateTime}
+        WHERE orderNo = #{orderNo}
+    </update>
+    
+    <select id="UserOrderTakeCash_queryTakeCashTotalOfUser" parameterType="int" resultType="int">
+	    SELECT COUNT(orderNo)
+	    FROM user_order_takecash_tab
+	    WHERE userId = #{userId}
+	</select>
+	
+	<select id="UserOrderTakeCash_queryTakeCashListOfUser" parameterType="java.util.Map" resultType="UserOrderTakeCashDO">
+        SELECT orderNo, takeCashAmount, takeCashWay, takeCashAccount, addTime, takeCashStatus, remarks
+        FROM user_order_takecash_tab
+	    WHERE userId = #{userId}
+        ORDER BY addTime DESC
+        LIMIT #{startNumber}, #{pageSize}
+    </select>
+    
+    <select id="UserOrderTakeCash_queryTakeCashTotalOfBack" parameterType="java.util.Map" resultType="int">
+	    SELECT COUNT(orderNo)
+	    FROM user_order_takecash_tab
+	    <where>
+	        <if test="takeCashWay > 0 ">
+	            AND takeCashWay = #{takeCashWay}
+	        </if>
+	        <if test="takeCashStatus > -1 ">
+	            AND takeCashStatus = #{takeCashStatus}
+	        </if>
+	        <if test="orderNo != null and orderNo != '' ">
+	            AND orderNo LIKE CONCAT('%', #{orderNo}, '%')
+	        </if>
+	        <if test="userAccount != null and userAccount != '' ">
+	            AND remarks LIKE CONCAT('%', #{remarks}, '%')
+	        </if>
+            <if test="startTime != null">
+                AND addTime <![CDATA[ > ]]> #{startTime}
+            </if>
+            <if test="endTime != null">
+                AND addTime <![CDATA[ < ]]> #{endTime}
+            </if>
+	    </where>
+	</select>
+	
+	<select id="UserOrderTakeCash_queryTakeCashListOfBack" parameterType="java.util.Map" resultType="UserOrderTakeCashDO">
+        SELECT orderNo, userAccount, takeCashAmount, takeCashWay, takeCashAccount, addTime, takeCashStatus, remarks
+        FROM user_order_takecash_tab
+	    <where>
+	        <if test="takeCashWay > 0 ">
+	            AND takeCashWay = #{takeCashWay}
+	        </if>
+	        <if test="takeCashStatus > -1 ">
+	            AND takeCashStatus = #{takeCashStatus}
+	        </if>
+	        <if test="orderNo != null and orderNo != '' ">
+	            AND orderNo LIKE CONCAT('%', #{orderNo}, '%')
+	        </if>
+	        <if test="userAccount != null and userAccount != '' ">
+	            AND remarks LIKE CONCAT('%', #{remarks}, '%')
+	        </if>
+            <if test="startTime != null">
+                AND addTime <![CDATA[ > ]]> #{startTime}
+            </if>
+            <if test="endTime != null">
+                AND addTime <![CDATA[ < ]]> #{endTime}
+            </if>
+	    </where>
+        ORDER BY addTime DESC
+        LIMIT #{startNumber}, #{pageSize}
+    </select>
+	
+</mapper>

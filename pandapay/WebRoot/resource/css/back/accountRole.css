@@ -1,0 +1,97 @@
+.top
+{
+    background-color: #eeeeee;
+    width: 1195px;
+    margin-top: 10px;
+    padding-top: 15px;
+    color: #666666;
+    font-size: 16px;
+    font-family: "Microsoft Yahei";
+    position: relative;
+}
+.condition
+{
+    display: inline-block;
+    margin-left: 15px;
+    margin-bottom: 15px;
+}
+.query
+{
+    width: 200px;
+    height: 35px;
+    border-radius: 5px;
+    border: 1px solid #dddddd;
+    padding-left: 4px;
+}
+.ask
+{
+    margin-left: 15px;
+    width: 80px;
+    height: 35px;
+    border: none;
+    font-size: 16px;
+    text-align: center;
+    font-family: "Microsoft Yahei";
+    vertical-align: middle;
+    border-radius: 5px;
+    background-color: #febc5e;
+    cursor: pointer;
+    color: white;
+}
+.ask:hover
+{
+    background-color: #ffa92d;
+}
+
+.name
+{
+    width: 230px;
+}
+.jurisdiction
+{
+    width: 600px;
+}
+.time
+{
+    width: 200px;
+}
+.operate
+{
+    width: 200px;
+}
+.change
+{
+    color: #febc5e;
+}
+.delete
+{
+    margin-left: 10px;
+    width: 40px;
+    border: none;
+    background-color: transparent;
+    color: #f05634;
+    cursor: pointer;
+    text-align: center;
+}
+.change:hover
+{
+    color:#ffa92d;
+}
+.delete:hover
+{
+    color:#df3b17;
+}
+
+.delete_pop
+{
+    display:none;
+    z-index:999;
+}
+.mask_tips
+{
+    padding: 20px 15px;
+    text-align: left;
+    color: #666666;
+    font-size: 16px;
+    word-break: break-all;
+}

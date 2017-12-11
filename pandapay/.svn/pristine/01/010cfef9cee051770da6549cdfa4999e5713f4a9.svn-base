@@ -1,0 +1,10 @@
+package com.pandapay.service;
+
+/**
+ * 用户支付订单
+ * @author 豆豆
+ *
+ */
+public interface IUserOrderPayService {
+
+}

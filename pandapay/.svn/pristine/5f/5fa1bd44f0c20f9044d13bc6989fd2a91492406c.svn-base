@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC 
+		"-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pandapay.dao.impl.UserSessionDaoImpl">
+	
+	<insert id="UserSession_insertUserSession" parameterType="UserSessionDO">
+	    INSERT INTO
+	    user_session_tab(sessionId, userId, userAccount, ipAddress, loginFrom, addTime)
+	    VALUES(#{sessionId}, #{userId}, #{userAccount}, #{ipAddress}, #{loginFrom}, #{addTime})
+	</insert>
+	
+	<select id="UserSession_queryUserSession" parameterType="java.util.Map" resultType="UserSessionDO">
+	    SELECT sessionId, userId, userAccount, ipAddress, loginFrom, addTime
+	    FROM user_session_tab
+	    WHERE sessionId = #{sessionId}
+	</select>
+	
+</mapper>

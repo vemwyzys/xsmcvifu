@@ -1,0 +1,12 @@
+package com.pandapay.dao;
+
+/**
+ * 邀请码发放记录 
+ * @author gql
+ *
+ */
+public interface IBackerRecordInviteCodeDao {
+
+	
+	
+}

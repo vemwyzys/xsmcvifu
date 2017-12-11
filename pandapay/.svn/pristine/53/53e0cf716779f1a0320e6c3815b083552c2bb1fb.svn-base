@@ -1,0 +1,20 @@
+package com.pandapay.service.impl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.pandapay.dao.IUserOrderPayDao;
+import com.pandapay.service.IUserOrderPayService;
+
+/**
+ * 用户支付订单
+ * @author 豆豆
+ *
+ */
+@Service("userOrderPayService")
+public class UserOrderPayServiceImpl implements IUserOrderPayService {
+
+	/**用户支付订单*/
+	@Autowired
+	private IUserOrderPayDao userOrderPayDao;
+}

@@ -1,0 +1,43 @@
+.tipsMask
+{
+    display:none;
+    position:fixed;
+    width:100%;
+    height:100%;
+    background-color:rgba(0,0,0,0.6);
+    z-index:10;
+    top:0;
+}
+.tips_content
+{
+    margin: 100px auto 0 auto;
+    width:80%;
+    border:none;
+    background-color:white;
+    border-radius: 10px;
+    font-size: 14px;
+}
+.tipsMaskText
+{
+    padding: 30px 15px;
+    text-align: center;
+    color: #333333;
+    font-size: 18px;
+}
+.tipsYes
+{
+     width: 100px;
+    height: 40px;
+    text-align: center;
+    font-size: 16px;
+    font-family: "Microsoft Yahei";
+    border: none;
+    cursor: pointer;
+    background-color: #f05634;
+    color: white;
+}
+.ButtonTwo
+{
+    text-align: center;
+    padding-bottom: 15px;
+}

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC 
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pandapay.dao.impl.UserRecordAmountDaoImpl">
+	
+	<insert id="UserRecordAmount_insertRecord" parameterType="UserRecordAmountDO">
+	    INSERT INTO
+	    user_record_amount_tab(userId, inOutType, amount, serviceType, remarks, addTime)
+	    VALUES(#{userId}, #{inOutType}, #{amount}, #{serviceType}, #{remarks}, #{addTime})
+	</insert>
+	
+	<select id="UserRecordAmount_queryRecordTotalOfUser" parameterType="int" resultType="int">
+	    SELECT COUNT(id)
+	    FROM user_record_amount_tab
+	    WHERE userId = #{userId}
+	</select>
+	
+	<select id="UserRecordAmount_queryRecordListOfUser" parameterType="java.util.Map" resultType="UserRecordAmountDO">
+        SELECT inOutType, amount, serviceType, remarks, addTime
+        FROM user_record_amount_tab
+        WHERE userId = #{userId}
+        ORDER BY addTime DESC
+        LIMIT #{startNumber}, #{pageSize}
+    </select>
+	
+</mapper>

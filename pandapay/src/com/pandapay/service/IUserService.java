@@ -1,0 +1,198 @@
+package com.pandapay.service;
+
+import java.sql.Timestamp;
+import java.util.List;
+
+import com.pandapay.entity.BO.JsonObjectBO;
+import com.pandapay.entity.DO.UserDO;
+import com.pandapay.entity.VO.UserBackVO;
+
+/**
+ * 用户信息
+ * @author gql
+ *
+ */
+public interface IUserService {
+
+	/**
+	 * 新增用户
+	 * @param userAccount 用户帐号
+	 * @param password 登录密码（加密后的）
+	 * @param inviteCode 邀请码，没有值填null
+	 * @return 操作成功：返回code=1，操作失败：返回code!=-1
+	 */
+	public JsonObjectBO addUser(String userAccount, String password, String inviteCode);
+	
+	/**
+	 * 查询用户信息
+	 * @param userId 用户Id
+	 * @return 操作成功：返回用户信息，失败：返回null
+	 */
+	public UserDO queryUserByUserId(int userId);
+	
+	/**
+	 * 查询用户信息
+	 * @param userAccount 用户Id
+	 * @return 操作成功：返回用户信息，失败：返回null
+	 */
+	public UserDO queryUserByUserAccount(String userAccount);
+	
+	/**
+	 * 验证用户帐号是否已存在
+	 * @param userAccount 用户帐号
+	 * @return 已存在：返回true，不存在：返回false
+	 */
+	public boolean validataUserAccount(String userAccount);
+	
+	/**
+	 * 验证用户登录
+	 * @param userAccount 用户账号
+	 * @param password 账号密码
+	 * @return 操作成功：返回用户信息，失败：返回null
+	 */
+	public UserDO validateUserLogin(String userAccount, String password);
+	
+	/**
+	 * 增加钱包金额
+	 * @param userId 用户Id
+	 * @param addAmount 增加的钱包金额，单位：元
+	 * @return 操作成功：返回true，失败：返回false
+	 */
+	public boolean addWalletAmount(int userId, double addAmount);
+	
+	/**
+	 * 减少钱包金额
+	 * @param userId 用户Id
+	 * @param reduceAmount 减少的钱包金额，单位：元
+	 * @return 操作成功：返回true，失败：返回false
+	 */
+	public boolean reduceWalletAmount(int userId, double reduceAmount);
+	
+	/**
+	 * 增加红包金额
+	 * @param userId 用户Id
+	 * @param addAmount 增加的红包金额，单位：元
+	 * @return 操作成功：返回true，失败：返回false
+	 */
+	public boolean addRedPacketAmount(int userId, double addAmount);
+	
+	/**
+	 * 减少红包金额
+	 * @param userId 用户Id
+	 * @param reduceAmount 减少的红包金额，单位：元
+	 * @return 操作成功：返回true，失败：返回false
+	 */
+	public boolean reduceRedPacketAmount(int userId, double reduceAmount);
+	
+	/**
+	 * 增加钱包金额（后台操作）
+	 * @param userId 用户Id
+	 * @param addAmount 增加的钱包金额，单位：元
+	 * @param remarks 操作备注
+	 * @param backerId 操作的管理员id
+	 * @param backerAccount 操作的管理员帐号
+	 * @param ipAddress 操作时的ip地址
+	 * @return 操作成功：返回true，失败：返回false
+	 */
+	public boolean addWalletAmountOfBack(int userId, double addAmount, String remarks,
+			int backerId, String backerAccount, String ipAddress);
+	
+	/**
+	 * 减少钱包金额（后台操作）
+	 * @param userId 用户Id
+	 * @param reduceAmount 减少的钱包金额，单位：元
+	 * @param remarks 操作备注
+	 * @param backerId 操作的管理员id
+	 * @param backerAccount 操作的管理员帐号
+	 * @param ipAddress 操作时的ip地址
+	 * @return 操作成功：返回true，失败：返回false
+	 */
+	public boolean reduceWalletAmountOfBack(int userId, double reduceAmount, String remarks,
+			int backerId, String backerAccount, String ipAddress);
+	
+	/**
+	 * 修改用户密码
+	 * @param userId 用户Id
+	 * @param oldPassword 旧密码
+	 * @param newPassword 新密码
+	 * @return 操作成功：返回true，失败：返回false
+	 */
+	public boolean updateUserPassword(int userId, String oldPassword, String newPassword);
+	
+	/**
+	 * 修改用户密码
+	 * @param userId 用户Id
+	 * @param newPassword 新密码
+	 * @return 操作成功：返回true，失败：返回false
+	 */
+	public boolean updateUserPasswordModify(int userId, String newPassword);
+	
+	/**
+	 * 修改认证状态
+	 * @param userId 用户Id
+	 * @param authenStatus 认证状态，0：待认证，1：认证通过，2：认证失败
+	 * @param updateTime 最后修改时间
+	 * @return 操作成功：返回true，操作失败：返回false
+	 */
+	public boolean updateAuthenStatus(int userId, int authenStatus, Timestamp updateTime);
+	
+	/**
+	 * 修改会员身份
+	 * @param userId 用户Id
+	 * @param vipIdentity 会员身份，0：普通会员，1：VIP会员
+	 * @param vipOutTime 会员到期时间
+	 * @param updateTime 最后修改时间
+	 * @return 操作成功：返回true，操作失败：返回false
+	 */
+	public boolean updateVipIdentity(int userId, int vipIdentity, Timestamp vipOutTime, Timestamp updateTime);
+	
+	/**
+	 * 修改交易信息
+	 * @param userId 用户Id
+	 * @param singleLimitAmount 单笔限额，单位：元
+	 * @param receiptRate 收款费率
+	 * @param updateTime 最后修改时间
+	 * @return 操作成功：返回true，操作失败：返回false
+	 */
+	public boolean updatePayInfo(int userId, double singleLimitAmount, double receiptRate, Timestamp updateTime);
+	
+	/**
+	 * 查询用户总数（后台操作）
+	 * @param userAccount 用户帐号
+	 * @param inviteUserAccount 邀请人账号
+	 * @param idCard 身份证号
+	 * @param bankCard 结算银行卡号
+	 * @param authenStatus 认证状态，0：待认证，1：认证通过，2：认证失败，查询全部填-1
+	 * @param vipIdentity 会员身份，0：普通会员，1：VIP会员，查询全部填-1
+	 * @param startTime 注册时间的开始时间
+	 * @param endTime 注册时间的结束时间
+	 * @return 操作成功：返回用户总数，操作失败：返回0
+	 */
+	public int queryUserTotalOfBack(String userAccount, String inviteUserAccount, String idCard, String bankCard, int authenStatus, int vipIdentity,
+			Timestamp startTime, Timestamp endTime);
+	
+	/**
+	 * 查询用户信息列表（后台操作）
+	 * @param userAccount 用户帐号
+	 * @param inviteUserAccount 邀请人账号
+	 * @param idCard 身份证号
+	 * @param bankCard 结算银行卡号
+	 * @param authenStatus 认证状态，0：待认证，1：认证通过，2：认证失败，查询全部填-1
+	 * @param vipIdentity 会员身份，0：普通会员，1：VIP会员，查询全部填-1
+	 * @param startTime 注册时间的开始时间
+	 * @param endTime 注册时间的结束时间
+	 * @param pageNumber 当前页码
+	 * @param pageSize 每页大小
+	 * @return 操作成功：返回用户信息列表，操作失败：返回null
+	 */
+	public List<UserBackVO> queryUserListOfBack(String userAccount, String inviteUserAccount, String idCard, String bankCard, int authenStatus, int vipIdentity,
+			Timestamp startTime, Timestamp endTime, int pageNumber, int pageSize);
+	
+	/**
+	 * 查询VIP过期的用户列表（定时器操作，要将数据未过期但实际已过期的变成已过期）
+	 * @param pageSize 每次查询的数量
+	 * @return 操作成功：返回用户信息列表，操作失败：返回null
+	 */
+	public List<UserDO> queryOutVipList(int pageSize);
+	
+}

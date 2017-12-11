@@ -1,0 +1,10 @@
+package com.pandapay.service;
+
+/**
+ * 首页广告
+ * @author 豆豆
+ *
+ */
+public interface ISystemAdsService {
+
+}

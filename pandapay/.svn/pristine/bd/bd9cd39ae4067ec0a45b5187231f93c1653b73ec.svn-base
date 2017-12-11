@@ -1,0 +1,32 @@
+body
+{
+    background-color: #ffffff !important;
+}
+.succeed,.fail
+{
+    margin:45px auto;
+    width: 80%;
+    text-align: center;
+}
+.img
+{
+    margin-bottom: 25px;
+    width: 80px;
+}
+.title
+{
+    font-size: 28px;
+    color: #333333;
+}
+.word
+{
+    margin-top: 10px;
+    font-size: 14px;
+    color: #333333;
+}
+.mark
+{
+    margin-top: 10px;
+    font-size: 14px;
+    color: #999999;
+}

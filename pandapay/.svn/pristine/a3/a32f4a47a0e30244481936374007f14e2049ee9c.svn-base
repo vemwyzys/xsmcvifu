@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC 
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pandapay.dao.impl.UserOrderPayDaoImpl">
+	
+	<insert id="UserOrderPay_insertOrderPay" parameterType="UserOrderPayDO">
+	    INSERT INTO
+	    user_order_pay_tab(orderNo, userId, userAccount, payAmount, serviceType, payWay,
+	    								orderRebateModel, addTime, payStatus, remarks, updateTime)
+	    VALUES(#{orderNo}, #{userId}, #{userAccount}, #{payAmount}, #{serviceType}, #{payWay},
+	    			#{orderRebateModel}, #{outTime}, #{addTime}, #{payStatus}, #{remarks}, #{updateTime})
+	</insert>
+	
+	<update id="UserOrderPay_updateOrderPayStatus" parameterType="java.util.Map">
+        UPDATE user_order_pay_tab
+        SET payStatus = #{payStatus}, remarks = #{remarks}, updateTime = #{updateTime}
+        WHERE orderNo = #{orderNo}
+        	AND	payStatus = 0
+    </update>
+    
+    <select id="UserOrderPay_queryOrder" parameterType="java.util.Map" resultType="UserOrderPayDO">
+        SELECT orderNo, userId, userAccount, payAmount, serviceType, payWay, orderRebateModel, addTime, payStatus, remarks
+        FROM user_order_pay_tab
+        WHERE orderNo = #{orderNo}
+    </select>
+    
+    <select id="UserOrderPay_queryOrderTotalOfUser" parameterType="int" resultType="int">
+	    SELECT COUNT(orderNo)
+	    FROM user_order_pay_tab
+	    WHERE userId = #{userId}
+	</select>
+	
+	<select id="UserOrderPay_queryOrderListOfUser" parameterType="java.util.Map" resultType="UserOrderPayDO">
+	    SELECT orderNo, payAmount, serviceType, payWay, addTime, payStatus, remarks
+	    FROM user_order_pay_tab
+	    WHERE userId = #{userId}
+	    ORDER BY addTime DESC
+        LIMIT #{startNumber}, #{pageSize}
+	</select>
+	
+	<select id="UserOrderPay_queryOrderTotalOfBack" parameterType="java.util.Map" resultType="int">
+	    SELECT COUNT(orderNo)
+	    FROM user_order_pay_tab
+	    <where>
+	        <if test="serviceType > 0 ">
+	            AND serviceType = #{serviceType}
+	        </if>
+	        <if test="payWay > 0 ">
+	            AND payWay = #{payWay}
+	        </if>
+	        <if test="payStatus > -1 ">
+	            AND payStatus = #{payStatus}
+	        </if>
+	        <if test="orderNo != null and orderNo != '' ">
+	            AND orderNo LIKE CONCAT('%', #{orderNo}, '%')
+	        </if>
+	        <if test="userAccount != null and userAccount != '' ">
+	            AND userAccount LIKE CONCAT('%', #{userAccount}, '%')
+	        </if>
+            <if test="startTime != null">
+                AND addTime <![CDATA[ > ]]> #{startTime}
+            </if>
+            <if test="endTime != null">
+                AND addTime <![CDATA[ < ]]> #{endTime}
+            </if>
+	    </where>
+	</select>
+	
+	<select id="UserOrderPay_queryOrderListOfBack" parameterType="java.util.Map" resultType="UserOrderPayDO">
+        SELECT orderNo, userAccount, payAmount, serviceType, payWay, addTime, payStatus, remarks
+        FROM user_order_pay_tab
+	    <where>
+	        <if test="serviceType > 0 ">
+	            AND serviceType = #{serviceType}
+	        </if>
+	        <if test="payWay > 0 ">
+	            AND payWay = #{payWay}
+	        </if>
+	        <if test="payStatus > -1 ">
+	            AND payStatus = #{payStatus}
+	        </if>
+	        <if test="orderNo != null and orderNo != '' ">
+	            AND orderNo LIKE CONCAT('%', #{orderNo}, '%')
+	        </if>
+	        <if test="userAccount != null and userAccount != '' ">
+	            AND userAccount LIKE CONCAT('%', #{userAccount}, '%')
+	        </if>
+            <if test="startTime != null">
+                AND addTime <![CDATA[ > ]]> #{startTime}
+            </if>
+            <if test="endTime != null">
+                AND addTime <![CDATA[ < ]]> #{endTime}
+            </if>
+	    </where>
+        ORDER BY addTime DESC
+        LIMIT #{startNumber}, #{pageSize}
+    </select>
+	
+</mapper>

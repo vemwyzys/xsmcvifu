@@ -1,0 +1,117 @@
+.list
+{
+    margin-top: 15px;
+    width: 1000px;
+    border:1px solid #dddddd;
+}
+.listTitle
+{
+    padding: 0 20px;
+    height: 40px;
+    line-height: 40px;
+    color: #f05634;
+    background-color: #f7f7f7;
+    border-bottom: 1px solid #e7e7e7;
+}
+.details
+{
+    padding: 10px 20px;
+    background-color: #ffffff;
+    color: #898989;
+    font-size: 14px;
+}
+.listInfo
+{
+    margin-bottom: 7px;
+}
+.info
+{
+    margin-right: 30px;
+}
+.imgInfo
+{
+    display: inline-block;
+    width: 300px;
+    margin-right: 25px;
+}
+.imgInfo:last-of-type
+{
+    margin: 0;
+}
+.pic
+{
+    display: inline-block;
+    margin-bottom: 5px;
+    width: 300px;
+    height: 300px;
+    border: 1px solid #ececec;
+    text-align: center;
+}
+.img
+{
+    vertical-align: middle;
+}
+.infoTitle
+{
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+}
+.operate
+{
+    margin-top: 20px;
+}
+.back
+{
+    display: inline-block;
+    margin-right: 80px;
+    width: 120px;
+    height: 40px;
+    line-height: 40px;
+    background-color: #ffffff;
+    border: 1px solid #dddddd !important;
+    text-align: center;
+    border-radius: 5px;
+    color: #666666;
+    font-size: 18px;
+}
+.back:hover
+{
+    background-color: #e5f0f5;
+}
+.refuse,.pass
+{
+    margin-right: 15px;
+    width: 120px;
+    height: 40px;
+    line-height: 40px;
+    background-color: #f05634;
+    border: none;
+    text-align: center;
+    border-radius: 5px;
+    color: #ffffff;
+    font-size: 18px;
+    cursor: pointer;
+}
+.refuse:hover,.pass:hover
+{
+    background-color: #df3b17;
+}
+
+.refuse_pop,.pass_pop
+{
+    display:none;
+    z-index:999;
+}
+.mask_tips
+{
+    padding: 20px 15px;
+    text-align: left;
+    color: #666666;
+    font-size: 16px;
+    word-break: break-all;
+}
+.Button
+{
+    margin-top: 15px;
+}

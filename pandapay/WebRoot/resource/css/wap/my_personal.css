@@ -1,0 +1,28 @@
+.list
+{
+    float: left;
+    margin-top: 10px;
+    width: 100%;
+    background-color: #ffffff;
+}
+.listInfo
+{
+    float: left;
+    padding: 11px 3%;
+    width: 94%;
+    border-bottom: 1px solid #ececec;
+    font-size: 4.2vw;
+}
+.listLeft
+{
+    float: left;
+    width: 23vw;
+    color: #666666;
+}
+.listRight
+{
+    float: right;
+    width: 70vw;
+    color: #999999;
+    text-align: right;
+}

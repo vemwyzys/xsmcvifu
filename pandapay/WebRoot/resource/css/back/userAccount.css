@@ -1,0 +1,206 @@
+.condition
+{
+    display: inline-block;
+    margin-left: 15px;
+    margin-bottom: 15px;
+}
+.query
+{
+    width: 160px;
+    height: 35px;
+    border-radius: 5px;
+    border: 1px solid #dddddd;
+    padding-left: 4px;
+}
+.startTime,.endTime
+{
+    width: 156px;
+    height: 35px;
+    border-radius: 5px;
+    border: 1px solid #dddddd;
+    padding-left: 4px;
+    margin-left: 4px;
+}
+.choose
+{
+    width: 130px;
+    height: 35px;
+    border-radius: 5px;
+    border: 1px solid #dddddd;
+}
+.ask
+{
+    margin-left: 15px;
+    width: 80px;
+    height: 35px;
+    border: none;
+    font-size: 16px;
+    text-align: center;
+    font-family: "Microsoft Yahei";
+    vertical-align: middle;
+    border-radius: 5px;
+    background-color: #febc5e;
+    cursor: pointer;
+    color: white;
+}
+.ask:hover
+{
+    background-color: #ffa92d;
+}
+.educe
+{
+    margin-left: 15px;
+    width: 80px;
+    height: 35px;
+    border: none;
+    font-size: 16px;
+    text-align: center;
+    font-family: "Microsoft Yahei";
+    vertical-align: middle;
+    border-radius: 5px;
+    background-color: #5bb559;
+    cursor: pointer;
+    color: white;
+}
+.educe:hover
+{
+    background-color: #2aa32a
+}
+.tableInfo
+{
+    font-size: 12px !important;
+}
+.tableInfo td
+{
+    text-align: left !important;
+}
+.tableInfo p
+{
+    width: 100%;
+    word-break: break-all;
+}
+.account
+{
+    width: 174px;
+}
+.money
+{
+    width: 115px;
+}
+.contact
+{
+    width: 141px;
+}
+.authentic
+{
+    width: 177px;
+}
+.trade
+{
+    width: 117px;
+}
+.store
+{
+    width: 99px;
+}
+.personal
+{
+    width: 113px;
+}
+.operate
+{
+    width: 182px;
+}
+.addMoney,.minus,.change,.real,.changeInfo
+{
+    display: inline-block;
+    width: 85px;
+    text-align: center;
+    border:none;
+    background-color: transparent;
+    cursor: pointer;
+}
+.minus,.real
+{
+    margin-left: 5px;
+}
+.addMoney,.minus,.changeInfo
+{
+    margin-bottom: 3px;
+    color:#5bb559;
+}
+.addMoney:hover,.minus:hover,.changeInfo:hover
+{
+    color: #2aa32a;
+}
+.change
+{
+    color: #febc5e;
+}
+.change:hover
+{
+    color: #ffa92d;
+}
+.real
+{
+    color: #f05634;
+}
+.real:hover
+{
+    color: #df3b17;
+}
+
+
+.addMoney_pop,.minus_pop,.change_pop
+{
+    display:none;
+    z-index:999;
+}
+.mask_tips
+{
+    padding: 20px 15px;
+    text-align: left;
+    color: #666666;
+    font-size: 16px;
+    word-break: break-all;
+}
+.entry_tips
+{
+    padding: 10px 0 0 0;
+    text-align: left;
+    color: #666666;
+    font-size: 14px;
+    position: relative;
+}
+.sign
+{
+    width: 80px;
+    margin-left: 15px;
+    display: inline-block;
+}
+.sign span
+{
+    color: red;
+}
+.txt
+{
+    vertical-align: top;
+    padding: 4px;
+    width: 246px;
+    height: 60px;
+    border-radius: 5px;
+    border: 1px solid #cccccc;
+    resize: none;
+}
+.Button
+{
+    margin-top: 15px;
+}
+.overTime
+{
+    padding-left: 4px;
+    width: 250px;
+    height: 35px;
+    border-radius: 5px;
+    border: 1px solid #cccccc;
+}

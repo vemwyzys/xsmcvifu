@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC 
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pandapay.dao.impl.UserAuthenDaoImpl">
+	
+	<insert id="UserAuthen_insertUserAuthen" parameterType="UserAuthenDO">
+	    INSERT INTO
+	    user_authen_tab(userId, storeName, contactsName, address, idCard, bankCard, bankName, bankNo,
+	    							idCardImg, idCardHandleImg, bankCardImg, addTime)
+	    VALUES(#{userId}, #{storeName}, #{contactsName}, #{address}, #{idCard}, #{bankCard}, #{bankName}, #{bankNo},
+	    			#{idCardImg}, #{idCardHandleImg}, #{bankCardImg}, #{addTime})
+	</insert>
+	
+	<select id="UserAuthen_queryUserAuthen" parameterType="int" resultType="UserAuthenDO">
+        SELECT userAuthenId, userId, storeName, contactsName, address, idCard, bankCard, bankName, bankNo,
+        			idCardImg, idCardHandleImg, bankCardImg, addTime, authenStatus, authenTime, userPayId, remarks
+        FROM user_authen_tab
+        WHERE userAuthenId = #{userAuthenId}
+    </select>
+    
+	<select id="UserAuthen_queryLastAuthened" parameterType="int" resultType="UserAuthenDO">
+        SELECT userAuthenId, userId, storeName, contactsName, address, idCard, bankCard, bankName, bankNo,
+        			idCardImg, idCardHandleImg, bankCardImg, addTime, authenStatus, authenTime, userPayId, remarks
+        FROM user_authen_tab
+        WHERE userId = #{userId}
+        	AND authenStatus = 1
+        ORDER BY addTime DESC
+        LIMIT 1
+    </select>
+    
+	<select id="UserAuthen_queryNewAuthen" parameterType="int" resultType="UserAuthenDO">
+        SELECT userAuthenId, userId, storeName, contactsName, address, idCard, bankCard, bankName, bankNo,
+        			idCardImg, idCardHandleImg, bankCardImg, addTime, authenStatus, authenTime, userPayId, remarks
+        FROM user_authen_tab
+        WHERE userId = #{userId}
+        ORDER BY addTime DESC
+        LIMIT 1
+    </select>
+    
+    <update id="UserAuthen_updateAuthenStatus" parameterType="java.util.Map">
+        UPDATE user_authen_tab
+        SET authenStatus = #{authenStatus}, authenTime = #{authenTime}
+        	<if test="userPayId != null and userPayId != '' ">
+        		, userPayId = #{userPayId}
+        	</if>
+        	<if test="remarks != null and remarks != '' ">
+        		, remarks = #{remarks}
+        	</if>
+        WHERE userAuthenId = #{userAuthenId}
+        	AND authenStatus = 0
+    </update>
+		
+</mapper>

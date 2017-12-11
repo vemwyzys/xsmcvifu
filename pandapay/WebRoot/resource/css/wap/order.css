@@ -1,0 +1,67 @@
+.content
+{
+    margin-top: 10px;
+}
+.list
+{
+    float:left;
+    width: 100%;
+    background-color: #ffffff;
+    border-bottom: 1px solid #ececec;
+}
+.listInfo
+{
+    float: left;
+    padding: 10px 3%;
+    width: 94%;
+    border-top:1px solid #ececec;
+}
+.number
+{
+    float: left;
+    width: 80%;
+    font-size: 4.2vw;
+}
+.state
+{
+    float: right;
+    width: 20%;
+    text-align: right;
+    font-size: 3.8vw;
+}
+.succeed
+{
+    color: #2aa32a;
+}
+.fail
+{
+    color: #ff0000;
+}
+.money
+{
+    float: right;
+    margin-top: 3px;
+    font-size: 3.8vw;
+    color: #f05634;
+}
+.chanel
+{
+    float: left;
+    margin-top: 3px;
+    font-size: 3.7vw;
+    color: #999999;
+}
+.mark
+{
+    float: left;
+    width: 100%;
+    font-size: 3.7vw;
+    color: #999999;
+}
+.time
+{
+    float: left;
+    width: 100%;
+    font-size: 3.7vw;
+    color: #999999;
+}

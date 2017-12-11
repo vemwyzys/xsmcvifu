@@ -1,0 +1,61 @@
+package com.pandapay.service;
+
+import com.pandapay.entity.BO.JsonObjectBO;
+import com.pandapay.entity.DO.SystemAdsDO;
+
+/**
+ * 首页广告
+ * @author 豆豆
+ *
+ */
+public interface ISystemAdsService {
+	
+	/**
+	 * 新增广告
+	 * @param systemAds 广告信息
+	 * @return 操作成功：返回true，操作失败：返回false
+	 */
+	public boolean addAds(SystemAdsDO systemAds);
+	
+	/**
+	 * 查询广告信息
+	 * @param adsId 广告id
+	 * @return 操作成功：返回广告信息，操作失败：返回null
+	 */
+	public SystemAdsDO queryAdsByAdsId(int adsId);
+	
+	/**
+	 * 修改广告信息
+	 * @param systemAds 广告信息
+	 * @return 操作成功：返回true，操作失败：返回false
+	 */
+	public boolean modifyAds(SystemAdsDO systemAds);
+	
+	/**
+	 *  删除广告
+	 * @param adsId 广告id
+	 * @return 操作成功：返回true，操作失败：返回false
+	 */
+	public boolean deleteAds(int adsId);
+	
+	/**
+	 * 上移
+	 * @param adsId 广告id
+	 * @return 操作成功：返回true，操作失败：返回false
+	 */
+	public boolean upMove(int adsId);
+	
+	/**
+	 * 下移
+	 * @param adsId 广告id
+	 * @return 操作成功：返回true，操作失败：返回false
+	 */
+	public boolean downMove(int adsId);
+	
+	/**
+	 * 查询全部的广告信息（按显示位置分组过）
+	 * @return 操作成功：返回code=1，操作失败：返回code!=1
+	 */
+	public JsonObjectBO queryAllList();
+	
+}

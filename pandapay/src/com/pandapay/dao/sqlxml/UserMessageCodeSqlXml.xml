@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC 
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pandapay.dao.impl.UserMessageCodeDaoImpl">
+	
+	<insert id="UserMessageCode_insertMessageCode" parameterType="UserMessageCodeDO">
+	    INSERT INTO
+	    user_message_code_tab(phoneNo, messageCode, useStatus, addTime)
+	    VALUES(#{phoneNo}, #{messageCode}, #{useStatus}, #{addTime})
+	</insert>
+	
+	<select id="UserMessageCode_queryMessageCode" parameterType="java.util.Map" resultType="UserMessageCodeDO">
+	    SELECT id, phoneNo, messageCode, useStatus, addTime
+	    FROM user_message_code_tab
+	    WHERE phoneNo = #{phoneNo}
+	    	AND messageCode = #{messageCode}
+	    ORDER BY addTime DESC
+	    LIMIT 1
+	</select>
+	
+	<select id="UserMessageCode_queryTodayNum" parameterType="java.util.Map" resultType="int">
+	    SELECT COUNT(id)
+	    FROM user_message_code_tab
+	    WHERE phoneNo = #{phoneNo}
+	    	AND addTime <![CDATA[ > ]]> #{todayDate}
+	</select>
+	
+	<update id="UserMessageCode_updateUseStatus" parameterType="java.util.Map">
+        UPDATE user_message_code_tab
+        SET useStatus = #{useStatus}
+        WHERE id = #{id}
+        	AND useStatus = 0
+    </update>
+	
+</mapper>

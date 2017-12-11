@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC 
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pandapay.dao.impl.UserRelationWeixinDaoImpl">
+	
+	<insert id="UserRelationWeixin_insertRelation" parameterType="UserRelationWeixinDO">
+	    INSERT INTO
+	    user_relation_weixin_tab(userId, openId, addTime)
+	    VALUES(#{userId}, #{openId}, #{addTime})
+	</insert>
+	
+	<select id="UserRelationWeixin_queryRelationByUserId" parameterType="int" resultType="UserRelationWeixinDO">
+        SELECT id, userId, openId, addTime
+        FROM user_relation_weixin_tab
+        WHERE userId = #{userId}
+    </select>
+    
+	<select id="UserRelationWeixin_queryRelationByOpenId" parameterType="java.util.Map" resultType="UserRelationWeixinDO">
+        SELECT id, userId, openId, addTime
+        FROM user_relation_weixin_tab
+        WHERE openId = #{openId}
+    </select>
+	
+</mapper>

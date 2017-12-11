@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC 
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pandapay.dao.impl.SystemAppVersionDaoImpl">
+	
+	<insert id="SystemAppVersion_insertSystemAppVersion" parameterType="SystemAppVersionDO">
+	    INSERT INTO
+	    system_app_version_tab(versionType, versionNumber, updateDescribe, uploadUrl, addTime)
+	    VALUES(#{versionType}, #{versionNumber}, #{updateDescribe}, #{uploadUrl}, #{addTime})
+	</insert>
+	
+	<select id="SystemAppVersion_queryVersionByVersionId" parameterType="int" resultType="SystemAppVersionDO">
+        SELECT versionId, versionType, versionNumber, updateDescribe, uploadUrl, addTime
+        FROM system_app_version_tab
+        WHERE versionId = #{versionId}
+    </select>
+    
+	<select id="SystemAppVersion_queryNewByVersionType" parameterType="int" resultType="SystemAppVersionDO">
+        SELECT versionNumber, updateDescribe, uploadUrl
+        FROM system_app_version_tab
+        WHERE versionType = #{versionType}
+        ORDER BY addTime DESC
+        LIMIT 1
+    </select>
+    
+	<select id="SystemAppVersion_validateSystemAppVersion" parameterType="java.util.Map" resultType="int">
+        SELECT COUNT(versionId)
+        FROM system_app_version_tab
+        WHERE versionType = #{versionType}
+        	AND versionNumber = #{versionNumber}
+    </select>
+    
+    <select id="SystemAppVersion_querySystemAppVersionTotalOfBack" parameterType="java.util.Map" resultType="int">
+	    SELECT COUNT(versionId)
+	    FROM system_app_version_tab
+	    <where>
+	        <if test="versionType > 0 ">
+	            AND versionType = #{versionType}
+	        </if>
+	        <if test="versionNumber != null and versionNumber != '' ">
+	            AND versionNumber LIKE CONCAT('%', #{versionNumber}, '%')
+	        </if>
+            <if test="startTime != null">
+                AND addTime <![CDATA[ > ]]> #{startTime}
+            </if>
+            <if test="endTime != null">
+                AND addTime <![CDATA[ < ]]> #{endTime}
+            </if>
+	    </where>
+	</select>
+	
+	<select id="SystemAppVersion_querySystemAppVersionListOfBack" parameterType="java.util.Map" resultType="SystemAppVersionDO">
+        SELECT versionId, versionType, versionNumber, updateDescribe, uploadUrl, addTime
+        FROM system_app_version_tab
+	    <where>
+	        <if test="versionType > 0 ">
+	            AND versionType = #{versionType}
+	        </if>
+	        <if test="versionNumber != null and versionNumber != '' ">
+	            AND versionNumber LIKE CONCAT('%', #{versionNumber}, '%')
+	        </if>
+            <if test="startTime != null">
+                AND addTime <![CDATA[ > ]]> #{startTime}
+            </if>
+            <if test="endTime != null">
+                AND addTime <![CDATA[ < ]]> #{endTime}
+            </if>
+	    </where>
+        ORDER BY addTime DESC
+        LIMIT #{startNumber}, #{pageSize}
+    </select>
+    
+    <delete id="SystemAppVersion_deleteSystemAppVersion" parameterType="int">
+		DELETE FROM system_app_version_tab
+		WHERE versionId = #{versionId}
+	</delete>
+	
+</mapper>

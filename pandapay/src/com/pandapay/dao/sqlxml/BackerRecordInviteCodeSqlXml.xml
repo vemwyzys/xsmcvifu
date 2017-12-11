@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC 
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pandapay.dao.impl.BackerRecordInviteCodeDaoImpl">
+	
+	<insert id="BackerRecordInviteCode_insertRecord" parameterType="BackerRecordInviteCodeDO">
+	    INSERT INTO
+	    backer_record_inviteCode_tab(userId, userAccount, amount, remarks, backerId, backerAccount, ipAddress, addTime)
+	    VALUES(#{userId}, #{userAccount}, #{amount}, #{remarks}, #{backerId}, #{backerAccount}, #{ipAddress}, #{addTime})
+	</insert>
+	
+	<select id="BackerRecordInviteCode_queryRecordTotalOfBack" parameterType="java.util.Map" resultType="int">
+	    SELECT COUNT(id)
+	    FROM backer_record_inviteCode_tab
+	    <where>
+	        <if test="userAccount != null and userAccount != '' ">
+	            AND userAccount LIKE CONCAT('%', #{userAccount}, '%')
+	        </if>
+	        <if test="remarks != null and remarks != '' ">
+	            AND remarks LIKE CONCAT('%', #{remarks}, '%')
+	        </if>
+	        <if test="backerAccount != null and backerAccount != '' ">
+	            AND backerAccount LIKE CONCAT('%', #{backerAccount}, '%')
+	        </if>
+            <if test="startTime != null">
+                AND addTime <![CDATA[ > ]]> #{startTime}
+            </if>
+            <if test="endTime != null">
+                AND addTime <![CDATA[ < ]]> #{endTime}
+            </if>
+	    </where>
+	</select>
+	
+	<select id="BackerRecordInviteCode_queryRecordListOfBack" parameterType="java.util.Map" resultType="BackerRecordInviteCodeDO">
+        SELECT userAccount, amount, remarks, backerAccount, ipAddress, addTime
+        FROM backer_record_inviteCode_tab
+	    <where>
+	        <if test="userAccount != null and userAccount != '' ">
+	            AND userAccount LIKE CONCAT('%', #{userAccount}, '%')
+	        </if>
+	        <if test="remarks != null and remarks != '' ">
+	            AND remarks LIKE CONCAT('%', #{remarks}, '%')
+	        </if>
+	        <if test="backerAccount != null and backerAccount != '' ">
+	            AND backerAccount LIKE CONCAT('%', #{backerAccount}, '%')
+	        </if>
+            <if test="startTime != null">
+                AND addTime <![CDATA[ > ]]> #{startTime}
+            </if>
+            <if test="endTime != null">
+                AND addTime <![CDATA[ < ]]> #{endTime}
+            </if>
+	    </where>
+        ORDER BY addTime DESC
+        LIMIT #{startNumber}, #{pageSize}
+    </select>
+	
+</mapper>

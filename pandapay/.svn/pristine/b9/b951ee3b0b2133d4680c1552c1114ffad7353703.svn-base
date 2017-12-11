@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC 
+		"-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pandapay.dao.impl.BackRoleDaoImpl">
+	
+	<insert id="BackRole_insertBackRole" parameterType="BackRoleDO" useGeneratedKeys="true" keyColumn="roleId" keyProperty="roleId">
+	    INSERT INTO 
+	    back_role_tab(roleName, addTime)
+	    VALUES(#{roleName}, #{addTime})
+	</insert>
+	
+	<select id="BackRole_queryBackRole" parameterType="int" resultType="BackRoleDO">
+	    SELECT roleId, roleName, addTime
+	    FROM back_role_tab
+	    WHERE roleId = #{roleId}
+	</select>
+	
+	<select id="BackRole_queryBackRoleTotal" parameterType="java.util.Map" resultType="int">
+        SELECT COUNT(roleId)
+        FROM back_role_tab
+        <where>
+            <if test="roleName != null and roleName != ''">
+                AND roleName LIKE CONCAT('%', #{roleName},'%')
+            </if>
+        </where>
+    </select>
+	
+	<select id="BackRole_queryBackRoleList" parameterType="java.util.Map" resultType="BackRoleDO">
+        SELECT roleId, roleName, addTime
+        FROM back_role_tab
+        <where>
+            <if test="roleName != null and roleName != ''">
+                AND roleName LIKE CONCAT('%', #{roleName},'%')
+            </if>
+        </where>
+        ORDER BY addTime DESC
+        LIMIT #{startNumber}, #{pageSize}
+    </select>
+	
+	<update id="BackRole_updateBackRoleName" parameterType="java.util.Map">
+	    UPDATE back_role_tab
+	    SET roleName = #{roleName}
+	    WHERE roleId = #{roleId}
+	</update>
+	
+	<delete id="BackRole_deleteBackRole" parameterType="int">
+	    DELETE FROM back_role_tab
+	    WHERE roleId = #{roleId}
+	</delete>
+	
+</mapper>

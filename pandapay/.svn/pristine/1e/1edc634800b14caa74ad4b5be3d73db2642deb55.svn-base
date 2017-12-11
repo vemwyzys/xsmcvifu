@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC 
+		"-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pandapay.dao.impl.UserInviteCodeDaoImpl">
+	
+	<insert id="UserInviteCode_insertInviteCode" parameterType="UserInviteCodeDO">
+	    INSERT INTO
+	    user_invite_code_tab(inviteCode, userIdOwn, userAccountOwn, addTime, outTime, useStatus)
+	    VALUES(#{inviteCode}, #{userIdOwn}, #{userAccountOwn}, #{addTime}, #{outTime}, #{useStatus})
+	</insert>
+	
+	<insert id="UserInviteCode_addInviteCodeList" parameterType="java.util.List">
+	    INSERT INTO
+	    user_invite_code_tab(inviteCode, userIdOwn, userAccountOwn, addTime, outTime, useStatus)
+	    VALUES
+		<foreach collection="list" item="item" index="index" separator=",">
+			(#{item.inviteCode}, #{item.userIdOwn}, #{item.userAccountOwn}, #{item.addTime}, #{item.outTime}, #{item.useStatus})
+		</foreach>
+	</insert>
+	
+	<update id="UserInviteCode_updateInviteCodeUseStatus" parameterType="java.util.Map">
+        UPDATE user_invite_code_tab
+        SET useStatus = #{useStatus}, userIdUsed = #{userIdUsed}, userAccountUsed = #{userAccountUsed}, usedTime = #{usedTime}
+        WHERE inviteCode = #{inviteCode}
+        	AND	useStatus = 0
+    </update>
+    
+    <select id="UserInviteCode_queryInviteCodeByInviteCode" parameterType="java.util.Map" resultType="UserInviteCodeDO">
+        SELECT inviteCode, userIdOwn, userAccountOwn, addTime, outTime, useStatus, userIdUsed, userAccountUsed, usedTime
+        FROM user_invite_code_tab
+	    WHERE inviteCode = #{inviteCode}
+    </select>
+    
+    <select id="UserInviteCode_queryInviteCodeTotalOfUser" parameterType="java.util.Map" resultType="int">
+	    SELECT COUNT(inviteCode)
+	    FROM user_invite_code_tab
+	    WHERE userIdOwn = #{userIdOwn}
+	    	<if test="useStatus > -1 ">
+	            AND useStatus = #{useStatus}
+	        </if>
+	</select>
+	
+    <select id="UserInviteCode_queryInviteCodeListOfUser" parameterType="java.util.Map" resultType="UserInviteCodeDO">
+	    SELECT inviteCode, addTime, outTime, useStatus, userAccountUsed, usedTime
+	    FROM user_invite_code_tab
+	    WHERE userIdOwn = #{userIdOwn}
+	    	<if test="useStatus > -1 ">
+	            AND useStatus = #{useStatus}
+	        </if>
+	    ORDER BY addTime DESC
+        LIMIT #{startNumber}, #{pageSize}
+	</select>
+	
+	<select id="UserInviteCode_queryInviteCodeTotalOfBack" parameterType="java.util.Map" resultType="int">
+	    SELECT COUNT(inviteCode)
+	    FROM user_invite_code_tab
+	    <where>
+	        <if test="useStatus > -1 ">
+	            AND useStatus = #{useStatus}
+	        </if>
+	        <if test="inviteCode != null and inviteCode != '' ">
+	            AND inviteCode LIKE CONCAT('%', #{inviteCode}, '%')
+	        </if>
+	        <if test="userAccountOwn != null and userAccountOwn != '' ">
+	            AND userAccountOwn LIKE CONCAT('%', #{userAccountOwn}, '%')
+	        </if>
+            <if test="startTime != null">
+                AND usedTime <![CDATA[ > ]]> #{startTime}
+            </if>
+            <if test="endTime != null">
+                AND usedTime <![CDATA[ < ]]> #{endTime}
+            </if>
+	    </where>
+	</select>
+	
+	<select id="UserInviteCode_queryInviteCodeListOfBack" parameterType="java.util.Map" resultType="UserInviteCodeDO">
+        SELECT inviteCode, userAccountOwn, addTime, outTime, useStatus, userAccountUsed, usedTime
+        FROM user_invite_code_tab
+	    <where>
+	        <if test="useStatus > -1 ">
+	            AND useStatus = #{useStatus}
+	        </if>
+	        <if test="inviteCode != null and inviteCode != '' ">
+	            AND inviteCode LIKE CONCAT('%', #{inviteCode}, '%')
+	        </if>
+	        <if test="userAccountOwn != null and userAccountOwn != '' ">
+	            AND userAccountOwn LIKE CONCAT('%', #{userAccountOwn}, '%')
+	        </if>
+            <if test="startTime != null">
+                AND usedTime <![CDATA[ > ]]> #{startTime}
+            </if>
+            <if test="endTime != null">
+                AND usedTime <![CDATA[ < ]]> #{endTime}
+            </if>
+	    </where>
+        ORDER BY addTime DESC
+        LIMIT #{startNumber}, #{pageSize}
+    </select>
+    
+</mapper>

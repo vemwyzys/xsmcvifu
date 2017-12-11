@@ -1,0 +1,67 @@
+.content
+{
+    float: left;
+    margin-top: 10px;
+}
+.register
+{
+    float: left;
+    border-top: 1px solid #ececec;
+    background-color: #ffffff;
+}
+.info
+{
+    float: left;
+    padding: 0 7.5%;
+    width: 85%;
+    height: 45px;
+    line-height: 45px;
+    border-bottom: 1px solid #ececec;
+}
+.sign
+{
+    float: left;
+    width: 21vw;
+    text-align: left;
+    font-size: 4.1vw;
+}
+.txt,.code
+{
+    float: left;
+    width: 63.5vw;
+    height: 45px;
+    border:none;
+    font-size: 3.6vw;
+    color: #666666;
+}
+.checkCode
+{
+    width: 36vw;
+    height: 45px;
+    font-size: 3.6vw;
+    border:none;
+    vertical-align: top;
+}
+#btn
+{
+    width: 24vw;
+    height: 45px;
+    text-align: center;
+    float: right;
+    color: #f05634;
+    background-color:#ffffff;
+    font-size: 3.6vw;
+    border:none;
+}
+.loginBtn
+{
+    margin: 15px 7.5%;
+    width: 85%;
+    height: 45px;
+    background-color: #f05634;
+    text-align: center;
+    border:none;
+    border-radius: 5px;
+    color:#ffffff;
+    font-size: 20px;
+}

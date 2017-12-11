@@ -1,0 +1,13 @@
+package config;
+
+/**
+ * 系统配置
+ * @author gql
+ *
+ */
+public class SystemConfig {
+	
+	/** 系统账号的用户Id */
+	public static final int systemUserId = 0;
+	
+}

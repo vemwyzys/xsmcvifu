@@ -1,0 +1,273 @@
+package com.pandapay.controller.back;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.sql.Timestamp;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.alibaba.fastjson.JSONObject;
+import com.iqmkj.utils.DateUtil;
+import com.iqmkj.utils.FileWriteLocalUtil;
+import com.iqmkj.utils.LogUtil;
+import com.iqmkj.utils.StringUtil;
+import com.pandapay.entity.BO.JsonObjectBO;
+import com.pandapay.entity.DO.UserInviteCodeDO;
+import com.pandapay.interceptor.BackerWebInterceptor;
+import com.pandapay.service.IUserInviteCodeService;
+
+import config.FileUrlConfig;
+
+/***
+ * 邀请码库
+ * @author zjl
+ *
+ */
+@Controller
+@Scope(value = "prototype")
+@RequestMapping("/backerWeb/backerInviteCode/")
+public class BackerInviteCodeController {
+
+	/** 邀请码服务*/
+	@Autowired
+	private IUserInviteCodeService userInviteCodeService;
+	
+	/** 显示数据*/
+	public void showList(HttpServletRequest request){
+		String inviteCode = StringUtil.stringNullHandle(request.getParameter("inviteCode"));
+		String userAccount = StringUtil.stringNullHandle(request.getParameter("userAccount"));
+		String useStatusStr = StringUtil.stringNullHandle(request.getParameter("useStatus"));
+		String startTimeStr = StringUtil.stringNullHandle(request.getParameter("startTime"));
+		String endTimeStr = StringUtil.stringNullHandle(request.getParameter("endTime"));
+		String pageNumberStr = StringUtil.stringNullHandle(request.getParameter("pageNumber"));
+		
+		int useStatus = -1;
+		if(StringUtil.isNotNull(useStatusStr)){
+			useStatus = Integer.parseInt(useStatusStr);
+		}
+		
+		Timestamp startTime = null;
+		if(StringUtil.isNotNull(startTimeStr)){
+			startTime = Timestamp.valueOf(startTimeStr);
+		}
+		
+		Timestamp endTime = null;
+		if(StringUtil.isNotNull(endTimeStr)){
+			endTime = Timestamp.valueOf(endTimeStr);
+		}
+		
+		int pageNumber = 0;
+		if(StringUtil.isNotNull(pageNumberStr)){
+			pageNumber = Integer.parseInt(pageNumberStr);
+		}
+		
+		int pageSize = 20;
+		int totalNumber = userInviteCodeService.queryInviteCodeTotalOfBack(inviteCode, userAccount, useStatus, startTime, endTime);
+		
+		//总页码数
+		int totalPageNumber = (int) (totalNumber/1.0/pageSize);
+		//若页码总数恰为页码大小的整数倍，则总数减一
+		if (totalNumber > 0 && Math.ceil(totalNumber/1.0/pageSize) == totalPageNumber) {
+			totalPageNumber--;
+		}
+		if(pageNumber > totalPageNumber){
+			pageNumber = totalPageNumber;
+		}
+		
+		List<UserInviteCodeDO> list = null;
+		if(totalNumber > 0){
+			list = userInviteCodeService.queryInviteCodeListOfBack(inviteCode, userAccount, useStatus, startTime, endTime, pageNumber, pageSize);
+		}
+		
+		request.setAttribute("inviteCode", inviteCode);
+		request.setAttribute("userAccount", userAccount);
+		request.setAttribute("useStatus", useStatus);
+		request.setAttribute("startTime", startTimeStr);
+		request.setAttribute("endTime", endTimeStr);
+		
+		request.setAttribute("totalNumber", totalNumber);
+		request.setAttribute("pageNumber", pageNumber);
+		request.setAttribute("totalPageNumber", totalPageNumber);
+		
+		request.setAttribute("list", list);
+		
+		//添加当前页面，页面权限码
+		request.getSession().setAttribute("backer_pagePowerId", 151000);
+	}
+	
+	/** 展示页面*/
+	@RequestMapping("show.htm")
+	public String show(HttpServletRequest request){
+		boolean result = BackerWebInterceptor.validatePower(request, 151001);
+		if (!result) {
+			request.setAttribute("code", 2);
+			request.setAttribute("message", "您没有该权限！");
+			request.getSession().setAttribute("backer_pagePowerId", 0);
+			return "page/back/index";
+		}
+		
+		showList(request);
+		request.setAttribute("code", 1);
+		request.setAttribute("message", "查询成功！");
+		
+		return "page/back/inviteCode";
+	}
+	
+	/** 导出数据*/
+	@RequestMapping(value = "exportData", method = RequestMethod.POST)
+	public @ResponseBody JsonObjectBO exportData(HttpServletRequest request){
+		JsonObjectBO responseJson = new JsonObjectBO();
+		
+		boolean result = BackerWebInterceptor.validatePower(request, 151002);
+		if(!result){
+			responseJson.setCode(2);
+			responseJson.setMessage("您没有该权限");
+			return responseJson;
+		}
+		
+		String inviteCode = StringUtil.stringNullHandle(request.getParameter("inviteCode"));
+		String userAccount = StringUtil.stringNullHandle(request.getParameter("userAccount"));
+		String useStatusStr = StringUtil.stringNullHandle(request.getParameter("useStatus"));
+		String startTimeStr = StringUtil.stringNullHandle(request.getParameter("startTime"));
+		String endTimeStr = StringUtil.stringNullHandle(request.getParameter("endTime"));
+		
+		int useStatus = -1;
+		if(StringUtil.isNotNull(useStatusStr)){
+			useStatus = Integer.parseInt(useStatusStr);
+		}
+		
+		Timestamp startTime = null;
+		if(StringUtil.isNotNull(startTimeStr)){
+			startTime = Timestamp.valueOf(startTimeStr);
+		}
+		
+		Timestamp endTime = null;
+		if(StringUtil.isNotNull(endTimeStr)){
+			endTime = Timestamp.valueOf(endTimeStr);
+		}
+		
+		int pageNumber = 0;
+		int pageSize = 10000;
+		int totalNumber = userInviteCodeService.queryInviteCodeTotalOfBack(inviteCode, userAccount, useStatus, startTime, endTime);
+		
+		//总页码数
+		int totalPageNumber = (int) (totalNumber/1.0/pageSize);
+		//若页码总数恰为页码大小的整数倍，则总数减一
+		if (totalNumber > 0 && Math.ceil(totalNumber/1.0/pageSize) == totalPageNumber) {
+			totalPageNumber--;
+		}
+		List<UserInviteCodeDO> list = null;
+		if(totalNumber > 0){
+			list = userInviteCodeService.queryInviteCodeListOfBack(inviteCode, userAccount, useStatus, startTime, endTime, pageNumber, pageSize);
+		}
+		
+		XSSFWorkbook workBook = null;
+		OutputStream stream = null;
+		
+		try {
+			workBook = new XSSFWorkbook();
+			XSSFSheet sheet1 = workBook.createSheet("提现记录");
+			
+			//创建第一行表头
+			XSSFRow row = sheet1.createRow(0);
+			XSSFCell cell = row.createCell(0);
+			cell.setCellValue("邀请码");
+			cell = row.createCell(1);
+			cell.setCellValue("所属账号");
+			cell = row.createCell(2);
+			cell.setCellValue("获得时间");
+			cell = row.createCell(3);
+			cell.setCellValue("过期时间");
+			cell = row.createCell(4);
+			cell.setCellValue("使用状态");
+			cell = row.createCell(5);
+			cell.setCellValue("使用者账号");
+			cell = row.createCell(6);
+			cell.setCellValue("使用时间");
+			cell = row.createCell(7);
+			
+			int i = 1;
+			for(UserInviteCodeDO userInviteCodeDO : list){
+				XSSFRow row2 = sheet1.createRow(i);
+	            //循环写入列数据     
+	            for (int j = 0; j <= 8; j++) 
+	            {
+	            	cell = row2.createCell(j);    
+	            	switch (j) 
+	            	{
+						case 0:
+							cell.setCellValue(userInviteCodeDO.getInviteCode());
+							break;
+						case 1:
+							cell.setCellValue(userInviteCodeDO.getUserAccountOwn());
+							break;
+						case 2:
+							cell.setCellValue(DateUtil.longToTimeStr(userInviteCodeDO.getAddTime().getTime(), DateUtil.dateFormat2));
+							break;
+						case 3:
+							cell.setCellValue(DateUtil.longToTimeStr(userInviteCodeDO.getOutTime().getTime(), DateUtil.dateFormat2));
+							break;
+						case 4:
+							if(userInviteCodeDO.getUseStatus() == 0){
+								cell.setCellValue("未使用");
+							}else if(userInviteCodeDO.getUseStatus() == 1){
+								cell.setCellValue("已使用");
+							}
+							break;
+						case 5:
+							cell.setCellValue(userInviteCodeDO.getUserAccountUsed());
+							break;
+						case 6:
+							cell.setCellValue(DateUtil.longToTimeStr(userInviteCodeDO.getUsedTime().getTime(), DateUtil.dateFormat2));
+							break;
+						default:
+							break;
+					}
+	            }
+	            i++;
+			}
+			
+			//导出excel
+			String fileName = "inviteCode.xlsx";
+			
+			stream = new ByteArrayOutputStream();
+			workBook.write(stream);
+			String downLoadUrl = FileWriteLocalUtil.SaveInputStreamToFile(new ByteArrayInputStream(((ByteArrayOutputStream) stream).toByteArray()), FileUrlConfig.file_local_excel_url, fileName);
+			JSONObject data = new JSONObject();
+			data.put("url", downLoadUrl);
+			
+			responseJson.setCode(1);
+			responseJson.setMessage("导出成功");
+			responseJson.setData(data);
+			
+		} catch (Exception e) {
+			LogUtil.printErrorLog(e);
+			
+			responseJson.setCode(2);
+			responseJson.setMessage("导出失败，请重试");
+		} finally {
+			try {
+				workBook.close();
+				stream.close();
+			} catch (IOException e) {
+				LogUtil.printErrorLog(e);
+			}
+		}
+		return responseJson;
+	}
+	
+}

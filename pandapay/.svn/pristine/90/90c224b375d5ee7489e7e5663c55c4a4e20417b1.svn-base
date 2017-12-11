@@ -1,0 +1,119 @@
+.top
+{
+    position: fixed;
+    z-index: 1;
+    width: 100%;
+}
+.header
+{
+    border-bottom:1px solid #ececec !important;
+}
+.menu
+{
+    height: 42px;
+    line-height: 42px;
+    width: 100%;
+    background-color: #ffffff;
+    border-bottom: 1px solid #ececec;
+    text-align: center;
+}
+.choose
+{
+    float: left;
+    width: 50%;
+    font-size: 16px;
+    color: #666666;
+}
+.chooseState
+{
+    display: inline-block;
+    width: 50%;
+    height:40px;
+    line-height: 40px;
+    color: #f05634;
+    border-bottom: 2px solid #f05634;
+}
+.content
+{
+    margin-top: 10px;
+}
+.list
+{
+    float: left;
+    width: 100%;
+}
+.listInfo
+{
+    float: left;
+    margin-bottom: 10px;
+    padding:10px 3%;
+    width: 94%;
+    background-color: #ffffff;
+    border-top:1px solid #ececec;
+    border-bottom:1px solid #ececec;
+    color: #999999;
+}
+.listInfo:last-child
+{
+    margin-bottom: 0;
+}
+.number
+{
+    float: left;
+    width: 95%;
+    font-size: 4.2vw;
+    word-break: break-all;
+}
+.arrow
+{
+    float: right;
+    margin-top: 4.5vw;
+    width: 9px;
+}
+.time
+{
+    float: left;
+    margin-top: 12px;
+    font-size: 14px;
+}
+.listState
+{
+    float: right;
+    margin: 12px 5px 0 0 ;
+    font-size: 14px;
+}
+.succeed .number
+{
+    color: #333333;
+}
+.succeed .time
+{
+    color: #666666;
+}
+.succeed .listState
+{
+    color: #f05634;
+}
+.fail
+{
+    color: #999999 !important;
+}
+.used
+{
+    display: none;
+}
+.used .number
+{
+    width: 100%;
+}
+.user
+{
+    float: left;
+    margin-top: 5px;
+    width: 100%;
+    font-size: 14px;
+}
+.used .time
+{
+    margin-top: 0;
+}

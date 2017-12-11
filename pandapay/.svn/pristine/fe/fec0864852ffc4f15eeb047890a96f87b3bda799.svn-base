@@ -1,0 +1,183 @@
+package com.pandapay.entity.DO;
+
+import java.sql.Timestamp;
+
+/**
+ * 用户信息
+ * @author whx
+ *
+ */
+public class UserDO {
+	
+	private long userId;  //用户Id
+	private String openId;  //开放平台的用户标识Id，注册时间标识（14位）+随机数（6位）
+	private String userAccount;  //用户帐号
+	private String password;  //登录密码
+	private int userLevel;  //用户等级
+	private String introduceUser;  //推荐人帐号
+	private double accountAmount;  //账户金额，单位：元
+	private String phone;  //手机号
+	private String email;  //邮箱
+	private Timestamp addTime;  //注册时间
+
+	/**
+	 * 用户Id
+	 * @return the userId
+	 */
+	public long getUserId() {
+		return userId;
+	}
+
+	/**
+	 * 用户Id
+	 * @param userId the userId to set
+	 */
+	public void setUserId(long userId) {
+		this.userId = userId;
+	}
+
+	/**
+	 * 开放平台的用户标识Id，注册时间标识（14位）+随机数（6位）
+	 * @return the openId
+	 */
+	public String getOpenId() {
+		return openId;
+	}
+
+	/**
+	 * 开放平台的用户标识Id，注册时间标识（14位）+随机数（6位）
+	 * @param openId the openId to set
+	 */
+	public void setOpenId(String openId) {
+		this.openId = openId;
+	}
+
+	/**
+	 * 用户帐号
+	 * @return the userAccount
+	 */
+	public String getUserAccount() {
+		return userAccount;
+	}
+
+	/**
+	 * 用户帐号
+	 * @param userAccount the userAccount to set
+	 */
+	public void setUserAccount(String userAccount) {
+		this.userAccount = userAccount;
+	}
+
+	/**
+	 * 登录密码
+	 * @return the password
+	 */
+	public String getPassword() {
+		return password;
+	}
+
+	/**
+	 * 登录密码
+	 * @param password the password to set
+	 */
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	/**
+	 * 用户等级
+	 * @return the userLevel
+	 */
+	public int getUserLevel() {
+		return userLevel;
+	}
+
+	/**
+	 * 用户等级
+	 * @param userLevel the userLevel to set
+	 */
+	public void setUserLevel(int userLevel) {
+		this.userLevel = userLevel;
+	}
+
+	/**
+	 * 推荐人帐号
+	 * @return the introduceUser
+	 */
+	public String getIntroduceUser() {
+		return introduceUser;
+	}
+
+	/**
+	 * 推荐人帐号
+	 * @param introduceUser the introduceUser to set
+	 */
+	public void setIntroduceUser(String introduceUser) {
+		this.introduceUser = introduceUser;
+	}
+
+	/**
+	 * 账户金额，单位：元
+	 * @return the accountAmount
+	 */
+	public double getAccountAmount() {
+		return accountAmount;
+	}
+
+	/**
+	 * 账户金额，单位：元
+	 * @param accountAmount the accountAmount to set
+	 */
+	public void setAccountAmount(double accountAmount) {
+		this.accountAmount = accountAmount;
+	}
+
+	/**
+	 * 手机号
+	 * @return the phone
+	 */
+	public String getPhone() {
+		return phone;
+	}
+
+	/**
+	 * 手机号
+	 * @param phone the phone to set
+	 */
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	/**
+	 * 邮箱
+	 * @return the email
+	 */
+	public String getEmail() {
+		return email;
+	}
+
+	/**
+	 * 邮箱
+	 * @param email the email to set
+	 */
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	/**
+	 * 注册时间
+	 * @return the addTime
+	 */
+	public Timestamp getAddTime() {
+		return addTime;
+	}
+
+	/**
+	 * 注册时间
+	 * @param addTime the addTime to set
+	 */
+	public void setAddTime(Timestamp addTime) {
+		this.addTime = addTime;
+	}
+	
+}

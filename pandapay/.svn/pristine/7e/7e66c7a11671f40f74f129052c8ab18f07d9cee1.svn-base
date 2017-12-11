@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC 
+		"-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pandapay.dao.impl.BackRolePowerDaoImpl">
+	
+	<insert id="BackRolePower_insertBackRolePower" parameterType="java.util.List" >
+	    INSERT INTO 
+	    back_role_power_tab(roleId, powerId, addTime)
+	    VALUES
+		    <foreach collection="list" item="item" index="index" separator=",">
+		        (#{item.roleId}, #{item.powerId}, #{item.addTime})
+		    </foreach>
+	</insert>
+	
+	<select id="BackRolePower_queryPowerIdByRoleId" parameterType="int" resultType="Integer">
+	    SELECT powerId
+	    FROM back_role_power_tab
+	    WHERE roleId = #{roleId}
+	</select>
+	
+	<select id="BackRolePower_queryBackRolePowerDTOList" parameterType="int" resultType="BackRolePowerDTO">
+	    SELECT rolePowerMapTab.powerId, rolePowerMapTab.powerName, rolePowerMapTab.powerLevel, rolePowerMapTab.uperPowerId
+	    FROM back_role_power_tab AS rolePowerTab, back_role_power_map_tab AS rolePowerMapTab
+	    WHERE rolePowerTab.roleId = #{roleId}
+	    	AND rolePowerTab.powerId = rolePowerMapTab.powerId
+	</select>
+	
+	<select id="BackRolePower_validateBackRolePower" parameterType="java.util.Map" resultType="int">
+	    SELECT COUNT(*)
+	    FROM back_role_power_tab
+	    WHERE roleId = #{roleId}
+	    	AND powerId = #{powerId}
+	</select>
+	
+	<delete id="BackRolePower_deleteAllBackRolePowerByRoleId" parameterType="int">
+	    DELETE FROM back_role_power_tab
+	    WHERE roleId = #{roleId}
+	</delete>
+	
+</mapper>

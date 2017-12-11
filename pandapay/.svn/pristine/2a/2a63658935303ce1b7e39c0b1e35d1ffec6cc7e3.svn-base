@@ -1,0 +1,351 @@
+package com.pandapay.controller.back;
+
+import java.io.IOException;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.alibaba.fastjson.JSONObject;
+import com.iqmkj.utils.DateUtil;
+import com.iqmkj.utils.FileFomat;
+import com.iqmkj.utils.FileWriteRemoteUtil;
+import com.iqmkj.utils.LogUtil;
+import com.iqmkj.utils.StringUtil;
+import com.pandapay.entity.DO.SystemAdsDO;
+import com.pandapay.interceptor.BackerWebInterceptor;
+import com.pandapay.service.ISystemAdsService;
+
+import config.FileUrlConfig;
+
+/**
+ * 首页广告
+ * @author 豆豆
+ *
+ */
+@Controller
+@RequestMapping("/backerWeb/systemAdsManage")
+@Scope(value="prototype")
+public class SystemAdsManageController {
+
+	/**首页广告*/
+	@Autowired
+	private ISystemAdsService systemAdsService;
+	
+	/**查询*/
+	@SuppressWarnings("unchecked")
+	public void showList(HttpServletRequest request){
+		List<SystemAdsDO> headerAdsList = null;
+		List<SystemAdsDO> bottomAdsList = null;
+		
+		JSONObject dataJsonObject = systemAdsService.queryAllList().getData();
+		if(dataJsonObject != null){
+			headerAdsList =(List<SystemAdsDO>) systemAdsService.queryAllList().getData().get("headList");
+			bottomAdsList = (List<SystemAdsDO>) systemAdsService.queryAllList().getData().get("bottomList");
+			
+			request.setAttribute("headerAdsList", headerAdsList);
+			request.setAttribute("bottomAdsList", bottomAdsList);
+		}
+		
+		request.setAttribute("fileServiceRootUrl", FileUrlConfig.file_visit_url);
+		
+		//添加当前页面，页面权限码
+		request.getSession().setAttribute("backer_pagePowerId", 111000);
+	}
+	
+	/**展示*/
+	@RequestMapping(value="/show.htm")
+	public String show(HttpServletRequest request){
+		boolean reult = BackerWebInterceptor.validatePower(request, 111006);
+		if (!reult) {
+			request.setAttribute("code", 2);
+			request.setAttribute("message", "您没有该权限");
+			request.getSession().setAttribute("backer_pagePowerId", 0);
+			return "page/back/index";
+		}
+		
+		request.setAttribute("code", 1);
+		request.setAttribute("message", "操作成功");
+		
+		showList(request);
+		return "page/back/adsManage";
+	}
+	
+	/**新增广告*/
+	@RequestMapping(value="/add.htm", method=RequestMethod.POST)
+	public String add(HttpServletRequest request, @RequestParam("add_file")MultipartFile file){
+		boolean reult = BackerWebInterceptor.validatePower(request, 111001);
+		if (!reult) {
+			request.setAttribute("code", 2);
+			request.setAttribute("message", "您没有该权限");
+			request.getSession().setAttribute("backer_pagePowerId", 0);
+			return "page/back/index";
+		}
+		
+		String adsTitle = StringUtil.stringNullHandle(request.getParameter("add_adsTitle"));
+		String adsUrl = StringUtil.stringNullHandle(request.getParameter("add_adsLink"));
+		String showPositionStr = StringUtil.stringNullHandle(request.getParameter("addSelect"));
+		
+		if (!StringUtil.isNotNull(adsTitle) || !StringUtil.isNotNull(showPositionStr)) {
+			request.setAttribute("code", 2);
+			request.setAttribute("message", "参数错误");
+			
+			showList(request);
+			return "page/back/adsManage";
+		}
+		
+		int showPosition = Integer.parseInt(showPositionStr);
+		
+		SystemAdsDO systemAds = new SystemAdsDO();
+		if (StringUtil.isNotNull(adsUrl)) {
+			systemAds.setAdsLink(adsUrl);
+		}
+		
+		if (!FileFomat.isImage(file.getOriginalFilename())) {
+			request.setAttribute("code", 2);
+			request.setAttribute("message", "上传文件格式错误");
+			
+			showList(request);
+			return "page/back/adsManage";
+		}
+		
+		systemAds.setAddTime(DateUtil.getCurrentTime());
+		systemAds.setShowPosition(showPosition);
+		systemAds.setAdsTitle(adsTitle);
+		
+		try {
+			if (file != null && !file.isEmpty()) {
+				String adsImg = FileWriteRemoteUtil.uploadFile(file.getOriginalFilename(), file.getInputStream(), FileUrlConfig.file_remote_ads_url);
+				if (adsImg != null && adsImg != "") {
+					systemAds.setAdsImage(adsImg);
+				}
+				boolean result = systemAdsService.addAds(systemAds);
+				if (result) {
+					request.setAttribute("code", 2);
+					request.setAttribute("message", "新增成功");
+				}else {
+					request.setAttribute("code", 2);
+					request.setAttribute("message", "新增失败");
+				}
+			}else {
+				request.setAttribute("code", 2);
+				request.setAttribute("message", "新增失败");
+			}	
+		} catch (IOException e) {
+			request.setAttribute("code", 2);
+			request.setAttribute("message", "上传文件失败");
+			LogUtil.printErrorLog(e);
+		}
+		
+		showList(request);
+		return "page/back/adsManage";
+	}
+	
+	/**修改*/
+	@RequestMapping(value="/modify.htm", method=RequestMethod.POST)
+	public String modify(HttpServletRequest request, MultipartFile file){
+		
+		boolean reult = BackerWebInterceptor.validatePower(request, 111005);
+		if (!reult) {
+			request.setAttribute("code", 2);
+			request.setAttribute("message", "您没有该权限");
+			request.getSession().setAttribute("backer_pagePowerId", 0);
+			return "page/back/index";
+		}
+		
+		String adsIdStr = StringUtil.stringNullHandle(request.getParameter("modify_adsId"));
+		String adsTitle = StringUtil.stringNullHandle(request.getParameter("modify_adsTitle"));
+		String adsUrl = StringUtil.stringNullHandle(request.getParameter("modify_adsLink"));
+		String showPositionStr = StringUtil.stringNullHandle(request.getParameter("modify_showPosition"));
+		String adsImg = StringUtil.stringNullHandle(request.getParameter("modify_adsImage"));
+		
+		if (file != null && !file.isEmpty()) {
+			if (!FileFomat.isImage(file.getOriginalFilename())) {
+				request.setAttribute("code", 2);
+				request.setAttribute("message", "上传文件格式错误");
+				
+				showList(request);
+				return "page/back/adsManage";
+			}
+		}
+		
+		if (!StringUtil.isNotNull(adsTitle) || !StringUtil.isNotNull(showPositionStr) || !StringUtil.isNotNull(adsIdStr)) {
+			request.setAttribute("code", 2);
+			request.setAttribute("message", "参数错误");
+			
+			showList(request);
+			return "page/back/adsManage";
+		}
+		
+		int adsId = Integer.parseInt(adsIdStr);
+		int showPosition = Integer.parseInt(showPositionStr);
+		
+		SystemAdsDO oldAds = systemAdsService.queryAdsByAdsId(adsId);
+		if (oldAds == null) {
+			request.setAttribute("code", 2);
+			request.setAttribute("message", "参数错误");
+			
+			showList(request);
+			return "page/back/adsManage";
+		}
+		
+		SystemAdsDO systemAds = new SystemAdsDO();
+		if (StringUtil.isNotNull(adsUrl)) {
+			systemAds.setAdsLink(adsUrl);
+		}
+		systemAds.setAdsId(adsId);
+		systemAds.setAddTime(DateUtil.getCurrentTime());
+		systemAds.setAdsImage(adsImg);
+		systemAds.setShowPosition(showPosition);
+		systemAds.setAdsTitle(adsTitle);
+		
+		try {
+			if (file != null && !file.isEmpty()) {
+				//保存新文件并且删除旧文件
+				String newAdsImg = FileWriteRemoteUtil.uploadFile(file.getOriginalFilename(), file.getInputStream(), FileUrlConfig.file_remote_ads_url);
+				if (oldAds.getAdsImage() != null && oldAds.getAdsImage() != "") {
+					FileWriteRemoteUtil.deleteFile(oldAds.getAdsImage());
+				}
+				
+				systemAds.setAdsImage(newAdsImg);
+			}
+		} catch (IOException e) {
+			request.setAttribute("code", 2);
+			request.setAttribute("message", "参数错误");
+			
+			LogUtil.printErrorLog(e);
+		}
+		
+		boolean result = systemAdsService.modifyAds(systemAds);
+		if (result) {
+			request.setAttribute("code", 2);
+			request.setAttribute("message", "修改成功");
+		}else {
+			request.setAttribute("code", 2);
+			request.setAttribute("message", "修改失败");
+		}
+		
+		showList(request);
+		return "page/back/adsManage";
+	}
+	
+	/**删除*/
+	@RequestMapping(value="/delete.htm", method=RequestMethod.POST)
+	public String delete(HttpServletRequest request){
+		boolean reult = BackerWebInterceptor.validatePower(request, 111004);
+		if (!reult) {
+			request.setAttribute("code", 2);
+			request.setAttribute("message", "您没有该权限");
+			request.getSession().setAttribute("backer_pagePowerId", 0);
+			return "page/back/index";
+		}
+		
+		String adsIdStr = StringUtil.stringNullHandle(request.getParameter("delete_id"));
+		
+		if (!StringUtil.isNotNull(adsIdStr)) {
+			request.setAttribute("code", 2);
+			request.setAttribute("message", "参数错误");
+			
+			showList(request);
+			return "page/back/adsManage";
+		}
+		
+		int adsId = Integer.parseInt(adsIdStr);
+		
+		SystemAdsDO oldAds = systemAdsService.queryAdsByAdsId(adsId);
+		boolean resultBoo = systemAdsService.deleteAds(adsId);
+		if (resultBoo) {
+			if (oldAds.getAdsImage() != null && oldAds.getAdsImage() != "") {
+				FileWriteRemoteUtil.deleteFile(oldAds.getAdsImage());
+			}
+			request.setAttribute("code", 2);
+			request.setAttribute("message", "操作成功");
+		}else {
+			request.setAttribute("code", 2);
+			request.setAttribute("message", "操作失败");
+		}
+		
+		showList(request);
+		return "page/back/adsManage";
+	}
+	
+	/**上移*/
+	@RequestMapping(value="/upMove.htm", method=RequestMethod.POST)
+	public String upMove(HttpServletRequest request){
+		boolean reult = BackerWebInterceptor.validatePower(request, 111002);
+		if (!reult) {
+			request.setAttribute("code", 2);
+			request.setAttribute("message", "您没有该权限");
+			request.getSession().setAttribute("backer_pagePowerId", 0);
+			return "page/back/index";
+		}
+		
+		String adsIdStr = StringUtil.stringNullHandle(request.getParameter("upMove_id"));
+		
+		if (!StringUtil.isNotNull(adsIdStr)) {
+			request.setAttribute("code", 2);
+			request.setAttribute("message", "参数错误");
+			
+			showList(request);
+			return "page/back/adsManage";
+		}
+		
+		int adsId = Integer.parseInt(adsIdStr);
+		
+		boolean result = systemAdsService.upMove(adsId);
+		if (result) {
+			request.setAttribute("code", 1);
+			request.setAttribute("message", "操作成功");
+		}else {
+			request.setAttribute("code", 2);
+			request.setAttribute("message", "操作失败");
+		}
+		
+		showList(request);
+		return "page/back/adsManage";
+	}
+	
+	/**下移*/
+	@RequestMapping(value="/downMove.htm", method=RequestMethod.POST)
+	public String downMove(HttpServletRequest request){
+		boolean reult = BackerWebInterceptor.validatePower(request, 111003);
+		if (!reult) {
+			request.setAttribute("code", 2);
+			request.setAttribute("message", "您没有该权限");
+			request.getSession().setAttribute("backer_pagePowerId", 0);
+			return "page/back/index";
+		}
+		
+		String adsIdStr = StringUtil.stringNullHandle(request.getParameter("downMove_id"));
+		
+		if (!StringUtil.isNotNull(adsIdStr)) {
+			request.setAttribute("code", 2);
+			request.setAttribute("message", "参数错误");
+			
+			showList(request);
+			return "page/back/adsManage";
+		}
+		
+		int adsId = Integer.parseInt(adsIdStr);
+		
+		boolean result = systemAdsService.downMove(adsId);
+		if (result) {
+			request.setAttribute("code", 1);
+			request.setAttribute("message", "操作成功");
+		}else {
+			request.setAttribute("code", 2);
+			request.setAttribute("message", "操作失败");
+		}
+		
+		showList(request);
+		return "page/back/adsManage";
+	}
+	
+}

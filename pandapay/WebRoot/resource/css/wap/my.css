@@ -1,0 +1,150 @@
+.headerTwo
+{
+    padding-bottom: 25px;
+    width: 100%;
+    background-image: url("../images/my.jpg");
+    background-size: cover;
+}
+.top
+{
+    height: 45px;
+    line-height: 45px;
+    color: #ffffff;
+    text-align: center;
+    font-size: 18px;
+}
+.headImg
+{
+    margin:0 auto 10px auto;
+    text-align: center;
+}
+.img
+{
+    width: 80px;
+}
+/*.img,.headImg img*/
+/*{*/
+    /*width: 80px;*/
+    /*height: 80px;*/
+    /*border-radius: 100%;*/
+    /*background-color: #ffffff;*/
+    /*border: 1px solid #ececec;*/
+/*}*/
+.word
+{
+    text-align: center;
+}
+.account
+{
+    color: #ffffff;
+    font-size: 14px;
+}
+.realName
+{
+    padding: 1px;
+    font-size: 11px;
+    color: #fff100;
+    border: 1px solid #fff100;
+}
+.notReal
+{
+    padding: 1px;
+    font-size: 11px;
+    color: #666666;
+    border: 1px solid #666666;
+}
+.money
+{
+    width: 100%;
+    height: 70px;
+    background-color: #ffffff;
+    color: #666666;
+}
+.moneyInfo
+{
+    float: left;
+    margin-top: 15px;
+    width: 49.8%;
+    height: 40px;
+    border-right: 1px solid #ececec;
+}
+.moneyInfo:last-of-type
+{
+    border:none
+}
+.infoTitle
+{
+    float: left;
+    width: 100%;
+    font-size: 14px;
+    text-align: center;
+}
+.rest
+{
+    float: left;
+    margin-top: 3px;
+    width: 100%;
+    text-align: center;
+    font-size: 14px;
+}
+.rest span
+{
+    margin-right: 1px;
+    font-size: 18px;
+    color: #333333;
+}
+.menu
+{
+    float: left;
+    margin-top: 10px;
+    width: 100%;
+}
+.menuInfo
+{
+    float: left;
+    margin-bottom: 10px;
+    width: 100%;
+    border-bottom: 1px solid #ececec;
+}
+.link
+{
+    display: inline-block;
+    width: 90%;
+    padding: 0 5%;
+    height: 60px;
+    line-height: 60px;
+    color: #333333;
+    background-color: #ffffff;
+    border-top:1px solid #ececec;
+}
+.link:focus
+{
+    border-top:1px solid #ececec;
+}
+.icon
+{
+    width: 25px;
+    float: left;
+    margin-top: 17px;
+    margin-right: 10px;
+}
+.choose
+{
+    float: right;
+    margin-top: 22px;
+    width: 8px;
+}
+.out
+{
+    float: left;
+    margin: 15px 0;
+    width: 100%;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    font-size: 16px;
+    color: #f05634;
+    background-color: #ffffff;
+    border-top: 1px solid #ececec;
+    border-bottom: 1px solid #ececec;
+}

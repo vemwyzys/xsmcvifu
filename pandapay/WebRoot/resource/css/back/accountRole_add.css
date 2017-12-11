@@ -1,0 +1,140 @@
+.addAffiche
+{
+    width:1100px;
+    margin-top: 15px;
+    border: 1px solid #cccccc;
+    border-radius: 5px 5px 0  0;
+    font-family: "Microsoft Yahei";
+}
+.addRole
+{
+    margin-top: 15px;
+    font-size: 14px;
+    color: #666666;
+}
+.role
+{
+    width: 1000px;
+    display: inline-block;
+}
+.infoTitle
+{
+    margin-top: 0;
+    height: 40px;
+    line-height: 40px;
+    background-color: rgb(238,238,238);
+    color: #666666;
+    font-size: 16px;
+}
+.infoTitle img
+{
+    margin: 0 10px;
+}
+.caption
+{
+    width: 80px;
+    margin-left: 15px;
+    display: inline-block;
+}
+.caption span
+{
+    color: red;
+}
+.txt
+{
+    padding-left: 4px;
+    width: 300px;
+    border: 1px solid #cccccc;
+    height: 35px;
+    border-radius: 5px;
+    margin-right: 5px;
+}
+.limits,.child
+{
+    width: 150px;
+    display: inline-block;
+    font-size: 16px;
+    color: #333333;
+}
+.child
+{
+    margin-left: 10px;
+}
+.limitsChoose
+{
+    margin-left: 100px;
+    width: 150px;
+    display: inline-block;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    word-break: break-all;
+}
+.limitsChoose input
+{
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+    margin-top: -3px;
+    margin-right: 5px;
+}
+.childChoose
+{
+    width: 730px;
+    display: inline-block;
+    vertical-align: top;
+    margin-top: 10px;
+    margin-left: 10px;
+}
+.button
+{
+    margin-right: 10px;
+    margin-bottom: 5px;
+    margin-left: 0;
+    display: inline-block;
+}
+.childChoose input
+{
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+    margin-top: -3px;
+}
+.bottom
+{
+    width: 1010px;
+    padding-left: 90px;
+    height: 60px;
+    line-height: 60px;
+    margin-bottom: 35px;
+    background-color: rgb(245,245,245);
+    border-left:1px solid #cccccc ;
+    border-right:1px solid #cccccc ;
+    border-bottom:1px solid #cccccc ;
+    border-radius: 0 0 5px 5px ;
+}
+.bottom input
+{
+    width: 120px;
+    height: 40px;
+    margin-left: 10px;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 18px;
+    color: #666666;
+    font-family: "Microsoft Yahei";
+    cursor: pointer;
+}
+.confirm
+{
+    color: white !important;
+    background-color: #f05634;
+    border:none;
+}
+.confirm:hover
+{
+    background-color: #df3b17;
+}
+.cancel:hover
+{
+    background-color: #e5f0f5;
+}

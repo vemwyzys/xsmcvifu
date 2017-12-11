@@ -1,0 +1,20 @@
+package com.pandapay.dao.impl;
+
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import com.pandapay.dao.IBackerRecordInviteCodeDao;
+
+/**
+ * 邀请码发放记录
+ * @author gql
+ *
+ */
+@Repository
+public class BackerRecordInviteCodeDaoImpl implements IBackerRecordInviteCodeDao{
+	
+	@Autowired
+	private SqlSessionTemplate sqlSessionTemplate;
+	
+}

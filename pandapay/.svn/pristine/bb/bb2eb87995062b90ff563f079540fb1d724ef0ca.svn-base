@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC 
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pandapay.dao.impl.SystemAdsDaoImpl">
+	
+	<insert id="SystemAds_insertAds" parameterType="SystemAdsDO" keyColumn="adsId" keyProperty="adsId" useGeneratedKeys="true">
+	    INSERT INTO
+	    system_ads_tab(adsTitle, adsImage, adsLink, showPosition, preAdsId, addTime)
+	    VALUES(#{adsTitle}, #{adsImage}, #{adsLink}, #{showPosition}, #{preAdsId}, #{addTime})
+	</insert>
+	
+	<select id="SystemAds_queryAdsList" resultType="SystemAdsDO">
+        SELECT adsId, adsTitle, adsImage, adsLink, showPosition, preAdsId, addTime
+        FROM system_ads_tab
+        ORDER BY showPosition ASC, preAdsId ASC
+    </select>
+    
+    <select id="SystemAds_queryAdsByAdsId" parameterType="int" resultType="SystemAdsDO">
+        SELECT adsId, adsTitle, adsImage, adsLink, showPosition, preAdsId, addTime
+        FROM system_ads_tab
+        WHERE adsId = #{adsId}
+    </select>
+    
+	<select id="SystemAds_queryPreAds" parameterType="int" resultType="SystemAdsDO">
+        SELECT adsId, adsTitle, adsImage, adsLink, showPosition, preAdsId, addTime
+        FROM system_ads_tab
+        WHERE showPosition = #{showPosition}
+        ORDER BY preAdsId ASC
+        LIMIT 1
+    </select>
+    
+	<select id="SystemAds_queryNextAds" parameterType="java.util.Map" resultType="SystemAdsDO">
+        SELECT adsId, adsTitle, adsImage, adsLink, showPosition, preAdsId, addTime
+        FROM system_ads_tab
+        WHERE showPosition = #{showPosition}
+        	AND preAdsId = #{preAdsId}
+    </select>
+    
+    <update id="SystemAds_updateAds" parameterType="SystemAdsDO">
+        UPDATE system_ads_tab
+        SET adsTitle = #{adsTitle}, adsLink = #{adsLink}, showPosition = #{showPosition}, preAdsId = #{preAdsId}
+        	<if test="adsImage != null and adsImage != '' ">
+        		, adsImage = #{adsImage}
+        	</if>
+        WHERE adsId = #{adsId}
+    </update>
+    
+    <update id="SystemAds_updateAdsPreAdsId" parameterType="java.util.Map">
+        UPDATE system_ads_tab
+        SET preAdsId = #{preAdsId}
+        WHERE adsId = #{adsId}
+    </update>
+    
+    <delete id="SystemAds_deleteAds" parameterType="int">
+		DELETE FROM system_ads_tab
+		WHERE adsId = #{adsId}
+	</delete>
+	
+</mapper>

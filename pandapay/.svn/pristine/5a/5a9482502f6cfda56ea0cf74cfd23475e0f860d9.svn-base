@@ -1,0 +1,95 @@
+.content
+{
+    float: left;
+    margin-top: 10px;
+}
+.register
+{
+    float: left;
+    border-top: 1px solid #ececec;
+    background-color: #ffffff;
+}
+.info
+{
+    float: left;
+    padding: 0 5%;
+    width: 90%;
+    height: 45px;
+    line-height: 45px;
+    border-bottom: 1px solid #ececec;
+}
+.sign
+{
+    float: left;
+    width: 22vw;
+    line-height: 45px;
+    text-align: left;
+    font-size: 4.1vw;
+}
+.txt
+{
+    float: left;
+    width: 68vw;
+    height: 45px;
+    border:none;
+    font-size: 3.6vw;
+    color: #999999;
+}
+.loginBtn
+{
+    margin: 15px 7.5%;
+    width: 85%;
+    height: 45px;
+    background-color: #f05634;
+    text-align: center;
+    border:none;
+    border-radius: 5px;
+    color:#ffffff;
+    font-size: 20px;
+}
+.infoPic
+{
+    float: left;
+    padding: 0 5% 10px 5%;
+    width: 90%;
+}
+.tips
+{
+    float: right;
+    text-align: right;
+    width: 68vw;
+    height: 45px;
+    line-height: 45px;
+    border:none;
+    font-size: 3.6vw;
+    color: #999999;
+}
+.img
+{
+    position: relative;
+    float: left;
+    margin-left: 3%;
+    margin-right: 2%;
+    width:27%;
+    text-align: center;
+}
+.file
+{
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height:100%;
+
+}
+.file0
+{
+    width: 24vw;
+    height:24vw;
+    border: 2px solid #cccccc;
+    border-radius: 5px;
+}
+.word
+{
+    font-size: 3.3vw;
+    color: #999999;
+}

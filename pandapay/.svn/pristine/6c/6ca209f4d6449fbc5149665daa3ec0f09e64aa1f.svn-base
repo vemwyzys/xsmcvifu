@@ -1,0 +1,20 @@
+package com.pandapay.service.impl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.pandapay.dao.IUserMessageCodeDao;
+import com.pandapay.service.IUserMessageCodeService;
+
+/**
+ * 用户短信验证码
+ * @author 豆豆
+ *
+ */
+@Service("userMessageCodeService")
+public class UserMessageCodeServiceImpl implements IUserMessageCodeService {
+
+	/**用户短信验证码*/
+	@Autowired
+	private IUserMessageCodeDao userMessageCodeDao;
+}

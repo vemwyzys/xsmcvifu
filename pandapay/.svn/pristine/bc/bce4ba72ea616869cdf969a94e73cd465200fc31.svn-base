@@ -1,0 +1,20 @@
+package com.pandapay.service.impl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.pandapay.dao.IUserInviteCodeDao;
+import com.pandapay.service.IUserInviteCodeService;
+
+/**
+ * 邀请码
+ * @author 豆豆
+ *
+ */
+@Service("userInviteCodeService")
+public class UserInviteCodeServiceImpl implements IUserInviteCodeService {
+
+	/**邀请码*/
+	@Autowired
+	private IUserInviteCodeDao userInviteCodeDao;
+}

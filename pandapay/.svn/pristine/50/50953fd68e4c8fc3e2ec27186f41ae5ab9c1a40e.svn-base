@@ -1,0 +1,10 @@
+package com.pandapay.service;
+
+/**
+ * 邀请码
+ * @author 豆豆
+ *
+ */
+public interface IUserInviteCodeService {
+
+}

@@ -1,0 +1,159 @@
+.condition
+{
+    display: inline-block;
+    margin-left: 15px;
+    margin-bottom: 15px;
+}
+.query
+{
+    width: 180px;
+    height: 35px;
+    border-radius: 5px;
+    border: 1px solid #dddddd;
+    padding-left: 4px;
+}
+.startTime,.endTime
+{
+    width: 236px;
+    height: 35px;
+    border-radius: 5px;
+    border: 1px solid #dddddd;
+    padding-left: 4px;
+    margin-left: 4px;
+}
+.choose
+{
+    width: 150px;
+    height: 35px;
+    border-radius: 5px;
+    border: 1px solid #dddddd;
+}
+.ask
+{
+    margin-left: 15px;
+    width: 80px;
+    height: 35px;
+    border: none;
+    font-size: 16px;
+    text-align: center;
+    font-family: "Microsoft Yahei";
+    vertical-align: middle;
+    border-radius: 5px;
+    background-color: #febc5e;
+    cursor: pointer;
+    color: white;
+}
+.ask:hover
+{
+    background-color: #ffa92d;
+}
+.educe
+{
+    margin-left: 15px;
+    width: 80px;
+    height: 35px;
+    border: none;
+    font-size: 16px;
+    text-align: center;
+    font-family: "Microsoft Yahei";
+    vertical-align: middle;
+    border-radius: 5px;
+    background-color: #5bb559;
+    cursor: pointer;
+    color: white;
+}
+.educe:hover
+{
+    background-color: #2aa32a
+}
+.order,.account
+{
+    width: 150px;
+}
+.money
+{
+    width: 110px;
+}
+.type,.state
+{
+    width: 75px;
+}
+.time
+{
+    width: 140px;
+}
+.receive
+{
+    width: 178px;
+}
+.mark
+{
+    width: 173px;
+}
+.operate
+{
+    width: 60px;
+}
+.pay
+{
+    text-align: center;
+    color: #f05634;
+    font-size: 14px;
+    font-family: "Microsoft YaHei";
+    cursor: pointer;
+    border-radius: 5px;
+    margin-right: 3px;
+    width: 45px;
+    border: none;
+    background-color: transparent;
+}
+.pay:hover
+{
+    color: #df3b17;
+}
+
+.pay_pop
+{
+    display:none;
+    z-index:999;
+}
+.mask_tips
+{
+    padding: 20px 15px;
+    text-align: left;
+    color: #666666;
+    font-size: 16px;
+    word-break: break-all;
+}
+.entry_tips
+{
+    padding: 10px 0 0 0;
+    text-align: left;
+    color: #666666;
+    font-size: 14px;
+    position: relative;
+}
+.sign
+{
+    width: 80px;
+    margin-left: 15px;
+    display: inline-block;
+}
+.sign span
+{
+    color: red;
+}
+.txt
+{
+    vertical-align: top;
+    padding: 4px;
+    width: 246px;
+    height: 60px;
+    border-radius: 5px;
+    border: 1px solid #cccccc;
+    resize: none;
+}
+.Button
+{
+    margin-top: 15px;
+}

@@ -1,0 +1,20 @@
+package com.pandapay.service.impl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.pandapay.dao.ISystemAdsDao;
+import com.pandapay.service.ISystemAdsService;
+
+/**
+ * 首页广告
+ * @author 豆豆
+ *
+ */
+@Service("systemAdsService")
+public class SystemAdsServiceImpl implements ISystemAdsService {
+
+	/**首页广告*/
+	@Autowired
+	private ISystemAdsDao systemAdsDao;
+}

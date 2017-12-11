@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC 
+		"-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pandapay.dao.impl.UserDaoImpl">
+	
+	<insert id="User_insertUser" parameterType="UserDO">
+	    INSERT INTO
+	    user_tab(openId, userAccount, password, userLevel, introduceUser, accountAmount, phone, email, addTime)
+	    VALUES(#{openId}, #{userAccount}, #{password}, #{userLevel}, #{introduceUser}, #{accountAmount}, #{phone}, #{email}, #{addTime})
+	</insert>
+	
+	<select id="User_queryUserByOpenId" parameterType="java.util.Map" resultType="UserDO">
+	    SELECT userId, openId, userAccount, userLevel, introduceUser, accountAmount, phone, email, addTime
+	    FROM user_tab
+	    WHERE openId = #{openId}
+	</select>
+	
+	<select id="User_queryUserByUserId" parameterType="long" resultType="UserDO">
+        SELECT userId, openId, userAccount, userLevel, introduceUser, accountAmount, phone, email, addTime
+        FROM user_tab
+        WHERE userId = #{userId}
+    </select>
+	
+	<select id="User_queryUserTotalOfBack" parameterType="java.util.Map" resultType="int">
+	    SELECT COUNT(userId)
+	    FROM user_tab
+	    <where>
+	        <if test="userAccount != null and userAccount != ''">
+	            AND userAccount LIKE CONCAT('%', #{userAccount}, '%')
+	        </if>
+	        <if test="introduceUser != null and introduceUser != ''">
+                AND introduceUser LIKE CONCAT('%', #{introduceUser}, '%')
+            </if>
+            <if test="phone != null and phone != ''">
+                AND phone LIKE CONCAT('%', #{phone}, '%')
+            </if>
+            <if test="startTime != null">
+                AND addTime <![CDATA[ > ]]> #{startTime}
+            </if>
+            <if test="endTime != null">
+                AND addTime <![CDATA[ < ]]> #{endTime}
+            </if>
+	    </where>
+	</select>
+	
+	<select id="User_queryUserListOfBack" parameterType="java.util.Map" resultType="UserDO">
+        SELECT userId, openId, userAccount, userLevel, introduceUser, accountAmount, phone, email, addTime
+        FROM user_tab
+        <where>
+            <if test="userAccount != null and userAccount != ''">
+                AND userAccount LIKE CONCAT('%', #{userAccount}, '%')
+            </if>
+            <if test="introduceUser != null and introduceUser != ''">
+                AND introduceUser LIKE CONCAT('%', #{introduceUser}, '%')
+            </if>
+            <if test="phone != null and phone != ''">
+                AND phone LIKE CONCAT('%', #{phone}, '%')
+            </if>
+            <if test="startTime != null">
+                AND addTime <![CDATA[ > ]]> #{startTime}
+            </if>
+            <if test="endTime != null">
+                AND addTime <![CDATA[ < ]]> #{endTime}
+            </if>
+        </where>
+        ORDER BY addTime DESC
+        LIMIT #{startNumber}, #{pageSize}
+    </select>
+	
+	<select id="User_validataUserAccount" parameterType="java.util.Map" resultType="int">
+        SELECT COUNT(userId)
+        FROM user_tab
+        WHERE userAccount = #{userAccount}
+    </select>
+	
+	<select id="User_validateUserLogin" parameterType="java.util.Map" resultType="UserDO">
+	    SELECT userId, openId, userAccount, userLevel, introduceUser, accountAmount, phone, email, addTime
+	    FROM user_tab
+	    WHERE userAccount = #{userAccount}
+	    AND password = #{passwrod}
+	</select>
+	
+	<update id="User_addAccountAmount" parameterType="java.util.Map">
+	    UPDATE user_tab
+	    SET accountAmount = accountAmount + #{accountAmount}
+	    WHERE userId = #{userId}
+	</update>
+	
+	<update id="User_addAccountAmountList" parameterType="java.util.List">
+        UPDATE user_tab
+        SET accountAmount = CASE userId
+            <foreach collection="list" item="item" index="index" open=" " close=" " separator=" ">
+                WHEN #{item.changeObject} THEN accountAmount + #{item.changeNumber}
+            </foreach>
+                END
+        WHERE userId IN 
+            <foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+                #{item.changeObject}
+            </foreach>
+    </update>
+	
+	<update id="User_reduceAccountAmount" parameterType="java.util.Map">
+        UPDATE user_tab
+        SET accountAmount = accountAmount - #{accountAmount}
+        WHERE userId = #{userId}
+        AND accountAmount <![CDATA[ >= ]]> #{accountAmount}
+    </update>
+	
+	<update id="User_updateUserPassword" parameterType="java.util.Map">
+        UPDATE user_tab
+        SET password = #{newPassword}
+        WHERE userId = #{userId}
+        AND password = #{oldPassword}
+    </update>
+	
+	<update id="User_updateUserPhone" parameterType="java.util.Map">
+        UPDATE user_tab
+        SET phone = #{phone}
+        WHERE userId = #{userId}
+    </update>
+	
+	<update id="User_updateUserEmail" parameterType="java.util.Map">
+        UPDATE user_tab
+        SET email = #{email}
+        WHERE userId = #{userId}
+    </update>
+	
+	<update id="User_updateUserInfo" parameterType="java.util.Map">
+        UPDATE user_tab
+        <set>
+            <if test="phone != null || phone != ''">
+                phone = #{phone}
+            </if>
+            <if test="email != null || email != ''">
+                email = #{email}
+            </if>
+            <if test="userLevel > 0">
+                userLevel = #{userLevel}
+            </if>
+            <if test="introduceUser != null || introduceUser != ''">
+                introduceUser = #{introduceUser}
+            </if>
+        </set>
+        WHERE userId = #{userId}
+    </update>
+	
+</mapper>

@@ -1,0 +1,96 @@
+package com.iqmkj.utils;
+
+import java.io.File;
+import java.io.InputStream;
+import java.util.UUID;
+
+import javax.servlet.ServletContext;
+
+import org.apache.commons.io.FileUtils;
+
+/**
+ * 文件操作工具类（向本地写文件）
+ * @author gql
+ *
+ */
+public class FileWriteLocalUtil {
+
+	/**
+	 * 保存流文件
+	 * @param context  服务器
+	 * @param inputStream 文件输入流
+	 * @param fileDir 文件保存目录，如“/userImage/”
+	 * @param fileName 文件名称，如“abc.png”
+	 * @return  文件保存成功返回文件的相对路径，如：/upload/20150516/abc.png；保存不成功返回null。
+	 */
+	public static String SaveInputStreamToFile(ServletContext context, InputStream inputStream, String fileDir, String fileName){
+		
+		if(context == null || inputStream == null || !StringUtil.isNotNull(fileName)){
+			return null;
+		}
+		
+		//设置文件目录
+		String formatDate = DateUtil.longToTimeStr(DateUtil.getCurrentTimeMillis(), DateUtil.dateFormat10);
+		
+		//创建保存文件的文件路劲（包含文件夹和文件）
+		String fileDirectory = "/upload" ;
+		String serviceRoot = context.getRealPath(fileDirectory);
+		if(!StringUtil.isNotNull(serviceRoot)){
+			return null;
+		}
+		String targetDirectory = context.getRealPath(fileDirectory) + "/" + fileDir + "/" + formatDate + "/";
+		
+		try {
+			// 创建 GUID 对象
+			UUID uuid = UUID.randomUUID();
+			// 得到对象产生的ID
+			String tempFileName = uuid.toString();
+			// 转换为大写
+			tempFileName = tempFileName.toUpperCase();
+			
+			//新的文件名
+			int num = fileName.lastIndexOf(".");
+			String suffixStr = fileName.substring(num);
+			String newFileName = tempFileName + suffixStr;
+			
+			File targetFile = new File(targetDirectory, newFileName);
+			
+			FileUtils.copyInputStreamToFile(inputStream, targetFile);
+			
+			//文件保存的相对路径，如：/upload/2015_05_16/abc.png
+			String fileUrl = fileDirectory + "/" + fileDir + "/" + formatDate + "/" + newFileName;
+			
+			return fileUrl;
+		} catch (Exception ex) {
+			LogUtil.printErrorLog(ex);
+			return null;
+		}
+	}
+	
+	/**
+	 * 删除文件
+	 * @param filePath  文件相对路径
+	 * @return  删除成功：返回true，删除失败：返回false
+	 */
+	public static boolean deleteFile(ServletContext context, String filePath){
+		try{
+			if(!StringUtil.isNotNull(filePath) || context == null){
+				return false;
+			}
+			
+			String targetDirectory = context.getRealPath(filePath);
+			if(StringUtil.isNotNull(targetDirectory)){
+				File targetFile = new File(targetDirectory);
+				if(targetFile != null && targetFile.exists()){
+					boolean fileBoo = targetFile.delete();
+					return fileBoo;
+				}
+			}
+		}catch(Exception e){
+			LogUtil.printErrorLog(e);
+		}
+        
+		return false;
+	}
+	
+}

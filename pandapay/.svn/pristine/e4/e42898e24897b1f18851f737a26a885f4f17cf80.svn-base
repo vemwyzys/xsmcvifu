@@ -1,0 +1,9 @@
+package com.pandapay.service;
+
+/**
+ * 用户认证信息
+ * @author 豆豆
+ */
+public interface IUserAuthenService {
+
+}

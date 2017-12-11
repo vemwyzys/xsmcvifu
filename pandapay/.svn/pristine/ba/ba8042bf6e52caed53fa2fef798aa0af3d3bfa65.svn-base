@@ -1,0 +1,203 @@
+package com.pandapay.service.impl;
+
+import java.sql.Timestamp;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.alibaba.fastjson.JSONObject;
+import com.iqmkj.utils.DateUtil;
+import com.iqmkj.utils.NumberUtil;
+import com.iqmkj.utils.StringUtil;
+import com.pandapay.dao.IUserOrderPayDao;
+import com.pandapay.entity.BO.JsonObjectBO;
+import com.pandapay.entity.DO.UserAuthenDO;
+import com.pandapay.entity.DO.UserDO;
+import com.pandapay.entity.DO.UserOrderPayDO;
+import com.pandapay.service.IUserAuthenService;
+import com.pandapay.service.IUserOrderPayService;
+import com.pandapay.service.IUserService;
+import com.pandapay.utils.CodePayUtil;
+
+import config.PayConfig_code;
+
+/**
+ * 用户支付订单
+ * @author 豆豆
+ *
+ */
+@Service("userOrderPayService")
+public class UserOrderPayServiceImpl implements IUserOrderPayService {
+
+	/**用户支付订单*/
+	@Autowired
+	private IUserOrderPayDao userOrderPayDao;
+	
+	/** 用户信息 */
+	@Autowired
+	private IUserService userService;
+	
+	/** 用户认证信息 */
+	@Autowired
+	private IUserAuthenService userAuthenService;
+	
+	/**
+	 * 创建订单（用户下单）
+	 * @param userId 下单人用户id
+	 * @param payAmount 支付金额,单位:元
+	 * @param serviceType 业务类型,1:商户创建订单（用户下单）,2:充值
+	 * @param payWay 支付渠道,1：支付宝，2：微信
+	 * @return 操作成功：返回code=1，操作失败：返回code!=1
+	 */
+	public JsonObjectBO creatPayOrder(int userId, double payAmount, int serviceType, int payWay){
+		Timestamp curTime = DateUtil.getCurrentTime();
+		JsonObjectBO jsonObjectBO = new JsonObjectBO();
+		
+		UserDO userDO = userService.queryUserByUserId(userId);
+		if(userDO == null){
+			jsonObjectBO.setCode(2);
+			jsonObjectBO.setMessage("未查询到下单人信息");
+			return jsonObjectBO;
+		}
+		UserAuthenDO userAuthenDO = userAuthenService.queryLastAuthened(userDO.getUserId());
+		if(userAuthenDO == null){
+			jsonObjectBO.setCode(2);
+			jsonObjectBO.setMessage("未查询到下单人信息");
+			return jsonObjectBO;
+		}
+		
+		String orderNo = DateUtil.longToTimeStr(curTime.getTime(), DateUtil.dateFormat6) + NumberUtil.createNumberStr(11);
+		
+		String payType;
+		if(payWay == 1){
+			//支付宝
+			payType = "05";
+		}else if(payWay == 2){
+			//微信
+			payType = "04";
+		}else{
+			jsonObjectBO.setCode(2);
+			jsonObjectBO.setMessage("支付方式参数错误");
+			return jsonObjectBO;
+		}
+		
+		String goodsName;
+		if(serviceType == 1){
+			goodsName = "商家收款";
+		}else if(serviceType == 2){
+			goodsName = "会员充值";
+		}else{
+			jsonObjectBO.setCode(2);
+			jsonObjectBO.setMessage("业务类型参数错误");
+			return jsonObjectBO;
+		}
+		
+		CodePayUtil codePayUtil = new CodePayUtil();
+		String payCodeInfo = codePayUtil.createOrder(orderNo, userAuthenDO.getUserPayId(), (long)payAmount*100, PayConfig_code.notifyUrl_pay_service, payType, goodsName);
+		if(!StringUtil.isNotNull(payCodeInfo)){
+			jsonObjectBO.setCode(2);
+			jsonObjectBO.setMessage("下单失败");
+			return jsonObjectBO;
+		}
+		
+		UserOrderPayDO userOrderPayDO = new UserOrderPayDO();
+		userOrderPayDO.setOrderNo(orderNo);
+		userOrderPayDO.setUserId(userDO.getUserId());
+		userOrderPayDO.setUserAccount(userDO.getUserAccount());
+		userOrderPayDO.setPayAmount(payAmount);
+		userOrderPayDO.setServiceType(serviceType);
+		userOrderPayDO.setPayWay(payWay);
+		userOrderPayDO.setAddTime(curTime);
+		userOrderPayDO.setPayStatus(0);
+		userOrderPayDO.setRemarks("订单创建成功");
+		userOrderPayDO.setUpdateTime(curTime);
+		
+		boolean insertOrderPay = userOrderPayDao.insertOrderPay(userOrderPayDO);
+		if(insertOrderPay){
+			JSONObject jsonData = new JSONObject();
+			jsonData.put("orderNo", orderNo);
+			jsonData.put("payAmount", payAmount);
+			jsonData.put("serviceType", serviceType);
+			jsonData.put("payWay", payWay);
+			jsonData.put("payCodeInfo", payCodeInfo);
+			
+			jsonObjectBO.setCode(1);
+			jsonObjectBO.setMessage("下单成功");
+			jsonObjectBO.setData(jsonData);
+			return jsonObjectBO;
+		}else{
+			jsonObjectBO.setCode(2);
+			jsonObjectBO.setMessage("创建订单失败");
+			return jsonObjectBO;
+		}
+	}
+	
+	/**
+	 * 修改订单状态
+	 * @param orderNo 订单号
+	 * @param payStatus 支付状态,0：未知，1：支付成功, 2:支付失败, 3:其他
+	 * @param remarks 支付备注
+	 * @return 操作成功：返回true，操作失败：返回false
+	 */
+	public boolean updateOrderPayStatus(String orderNo, int payStatus, String remarks){
+		Timestamp curTime = DateUtil.getCurrentTime();
+		return userOrderPayDao.updateOrderPayStatus(orderNo, payStatus, remarks, curTime);
+	}
+	
+	/**
+	 * 查询订单总数（用户操作）
+	 * @param userId 用户id
+	 * @return 操作成功：返回订单总数，操作失败：返回0
+	 */
+	public int queryOrderTotalOfUser(int userId){
+		return userOrderPayDao.queryOrderTotalOfUser(userId);
+	}
+	
+	/**
+	 * 查询订单列表（用户操作）
+	 * @param userId 用户id
+	 * @param pageNumber 当前页码
+	 * @param pageSize 每页大小
+	 * @return 操作成功：返回订单列表，操作失败：返回null
+	 */
+	public List<UserOrderPayDO> queryOrderListOfUser(int userId, int pageNumber, int pageSize){
+		return userOrderPayDao.queryOrderListOfUser(userId, pageNumber, pageSize);
+	}
+	
+	/**
+	 * 查询订单总数（后台操作）
+	 * @param orderNo 订单号
+	 * @param userAccount 用户账号
+	 * @param serviceType 业务类型,1:商户创建订单（用户下单）,2:充值，查询全部填0
+	 * @param payWay 支付渠道,1：支付宝，2：微信，查询全部填0
+	 * @param payStatus 支付状态,0：未知，1：支付成功, 2:支付失败, 3:其他，查询全部填-1
+	 * @param startTime 申请时间的开始时间
+	 * @param endTime 申请时间的结束时间
+	 * @return 操作成功：返回订单总数，操作失败：返回0
+	 */
+	public int queryOrderTotalOfBack(String orderNo, String userAccount, int serviceType, int payWay, int payStatus,
+			Timestamp startTime, Timestamp endTime){
+		return userOrderPayDao.queryOrderTotalOfBack(orderNo, userAccount, serviceType, payWay, payStatus, startTime, endTime);
+	}
+	
+	/**
+	 * 查询订单列表（后台操作）
+	 * @param orderNo 订单号
+	 * @param userAccount 用户账号
+	 * @param serviceType 业务类型,1:商户创建订单（用户下单）,2:充值，查询全部填0
+	 * @param payWay 支付渠道,1：支付宝，2：微信，查询全部填0
+	 * @param payStatus 支付状态,0：未知，1：支付成功, 2:支付失败, 3:其他，查询全部填-1
+	 * @param startTime 申请时间的开始时间
+	 * @param endTime 申请时间的结束时间
+	 * @param pageNumber 当前页码
+	 * @param pageSize 每页大小
+	 * @return 操作成功：返回订单列表，操作失败：返回null
+	 */
+	public List<UserOrderPayDO> queryOrderListOfBack(String orderNo, String userAccount, int serviceType, int payWay, int payStatus,
+			Timestamp startTime, Timestamp endTime, int pageNumber, int pageSize){
+		return userOrderPayDao.queryOrderListOfBack(orderNo, userAccount, serviceType, payWay, payStatus,
+				startTime, endTime, pageNumber, pageSize);
+	}
+	
+}

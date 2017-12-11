@@ -1,0 +1,140 @@
+.content
+{
+    margin-top: 10px;
+}
+.receiveMoney
+{
+    float: left;
+    padding: 0 7.5%;
+    width: 85%;
+    height: 50px;
+    line-height: 50px;
+    background-color: #ffffff;
+    border-top:1px solid #ececec;
+    border-bottom:1px solid #ececec;
+}
+.sign
+{
+    float: left;
+    width: 21vw;
+    text-align: left;
+    font-size: 4.2vw;
+    color: #333333;
+}
+.txt
+{
+    float: left;
+    width: 63.5vw;
+    height: 50px;
+    border:none;
+    font-size: 3.6vw;
+    color: #666666;
+}
+.type
+{
+    float: left;
+    margin-top: 10px;
+    width: 100%;
+    background-color: #ffffff;
+    border-top:1px solid #ececec;
+}
+.typeTitle,.typeInfo
+{
+    float: left;
+    padding: 0 7.5%;
+    width: 85%;
+    height: 50px;
+    line-height: 50px;
+}
+.typeTitle
+{
+    font-size: 4.2vw;
+    color: #333333;
+}
+.typeInfo
+{
+    font-size: 14px;
+    color: #666666;
+    border-top:1px solid #ececec;
+}
+.typeName
+{
+    float: left;
+}
+.pay
+{
+    margin-right: 10px;
+    width: 32px;
+    vertical-align: middle;
+}
+.tick
+{
+    float: right;
+    margin-top: 15px;
+}
+.checkbox
+{
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 1px solid #cccccc;
+    float: left;
+    position: relative;
+}
+.check
+{
+    width: 20px;
+    position: absolute;
+    top:0;
+    left: 0;
+}
+.loginBtn
+{
+    margin: 20px 7.5%;
+    width: 85%;
+    height: 45px;
+    background-color: #f05634;
+    text-align: center;
+    border:none;
+    border-radius: 5px;
+    color:#ffffff;
+    font-size: 20px;
+}
+
+
+.mask_content
+{
+    margin-top: 50px !important;
+}
+.code_pop
+{
+    z-index: 999;
+    display: none;
+    padding: 5%;
+    width: 90%;
+    background-color: #ffffff;
+    border-radius: 5px;
+}
+.close
+{
+    float: right;
+    width: 24px;
+}
+.codeImg
+{
+    margin: 30px auto 0 auto;
+    width: 230px;
+    text-align: center;
+}
+.codeImg img
+{
+    width: 230px;
+}
+.codeTxt
+{
+    margin-top: 5px;
+    width: 100%;
+    font-size: 14px;
+    color: #333333;
+    text-align: center;
+}

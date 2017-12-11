@@ -1,0 +1,44 @@
+.content
+{
+    margin-top: 10px;
+}
+.receiveMoney
+{
+    float: left;
+    padding: 0 7.5%;
+    width: 85%;
+    height: 50px;
+    line-height: 50px;
+    background-color: #ffffff;
+    border-top:1px solid #ececec;
+    border-bottom:1px solid #ececec;
+}
+.sign
+{
+    float: left;
+    width: 21vw;
+    text-align: left;
+    font-size: 4.2vw;
+    color: #333333;
+}
+.txt
+{
+    float: left;
+    width: 63.5vw;
+    height: 50px;
+    border:none;
+    font-size: 3.6vw;
+    color: #666666;
+}
+.loginBtn
+{
+    margin: 20px 7.5%;
+    width: 85%;
+    height: 45px;
+    background-color: #f05634;
+    text-align: center;
+    border:none;
+    border-radius: 5px;
+    color:#ffffff;
+    font-size: 20px;
+}

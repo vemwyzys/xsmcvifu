@@ -1,0 +1,115 @@
+package com.pandapay.entity.DO;
+
+import java.sql.Timestamp;
+
+/**
+ * APP版本管理
+ * @author wss
+ *
+ */
+public class SystemAppVersionDO {
+	
+	private int versionId; //版本Id
+	private int versionType; //版本类型,1:Android,2:IOS
+	private String versionNumber; //版本号,versionType和versionNumber联合唯一
+	private String updateDescribe; //更新说明
+	private String uploadUrl; //下载地址
+	private Timestamp addTime; //添加时间
+	
+	/**
+	 * 版本Id
+	 * @return the versionId
+	 */
+	public int getVersionId() {
+		return versionId;
+	}
+	
+	/**
+	 * 版本Id
+	 * @param versionId the versionId to set
+	 */
+	public void setVersionId(int versionId) {
+		this.versionId = versionId;
+	}
+	
+	/**
+	 * 版本类型,1:Android,2:IOS
+	 * @return the versionType
+	 */
+	public int getVersionType() {
+		return versionType;
+	}
+	
+	/**
+	 * 版本类型,1:Android,2:IOS
+	 * @param versionType the versionType to set
+	 */
+	public void setVersionType(int versionType) {
+		this.versionType = versionType;
+	}
+	
+	/**
+	 * 版本号,versionType和versionNumber联合唯一
+	 * @return the versionNumber
+	 */
+	public String getVersionNumber() {
+		return versionNumber;
+	}
+	
+	/**
+	 * 版本号,versionType和versionNumber联合唯一
+	 * @param versionNumber the versionNumber to set
+	 */
+	public void setVersionNumber(String versionNumber) {
+		this.versionNumber = versionNumber;
+	}
+	
+	/**
+	 * 更新说明
+	 * @return the updateDescribe
+	 */
+	public String getUpdateDescribe() {
+		return updateDescribe;
+	}
+	
+	/**
+	 * 更新说明
+	 * @param updateDescribe the updateDescribe to set
+	 */
+	public void setUpdateDescribe(String updateDescribe) {
+		this.updateDescribe = updateDescribe;
+	}
+	
+	/**
+	 * 下载地址
+	 * @return the uploadUrl
+	 */
+	public String getUploadUrl() {
+		return uploadUrl;
+	}
+	
+	/**
+	 * 下载地址
+	 * @param uploadUrl the uploadUrl to set
+	 */
+	public void setUploadUrl(String uploadUrl) {
+		this.uploadUrl = uploadUrl;
+	}
+	
+	/**
+	 * 添加时间
+	 * @return the addTime
+	 */
+	public Timestamp getAddTime() {
+		return addTime;
+	}
+	
+	/**
+	 * 添加时间
+	 * @param addTime the addTime to set
+	 */
+	public void setAddTime(Timestamp addTime) {
+		this.addTime = addTime;
+	}
+
+}

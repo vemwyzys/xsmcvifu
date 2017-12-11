@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC 
+		"-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pandapay.dao.impl.BackerDaoImpl">
+	
+	<insert id="Backer_insertBacker" parameterType="BackerDO">
+	   INSERT INTO
+	   backer_tab(backerAccount, password, roleId, addTime)
+	   VALUES(#{backerAccount}, #{password}, #{roleId}, #{addTime})
+	</insert>
+	
+	<select id="Backer_queryBackerByBackerId" parameterType="int" resultType="BackerDO">
+	   SELECT backerId, backerAccount, roleId, addTime
+	   FROM backer_tab
+	   WHERE backerId = #{backerId}
+	</select>
+	
+	<select id="Backer_queryBackerTotal" parameterType="java.util.Map" resultType="int">
+	   SELECT COUNT(backerId)
+	   FROM backer_tab
+	   <where>
+	       <if test="backerAccount != null and backerAccount != ''">
+	           backerAccount LIKE CONCAT('%', #{backerAccount}, '%')
+	       </if>
+	   </where>
+	</select>
+	
+	<select id="Backer_queryBackerList" parameterType="java.util.Map" resultType="BackerDO">
+	   SELECT bTab.backerId AS backerId, bTab.backerAccount AS backerAccount, bTab.roleId AS roleId, bTab.addTime AS addTime, roleTab.roleName AS roleName
+	   FROM backer_tab AS bTab, back_role_tab AS roleTab
+	   <where>
+	           bTab.roleId = roleTab.roleId
+           <if test="backerAccount != null and backerAccount != ''">
+               AND bTab.backerAccount LIKE CONCAT('%', #{backerAccount}, '%')
+           </if>
+       </where>
+       ORDER BY bTab.addTime DESC
+       LIMIT #{startNumber}, #{pageSize}
+	</select>
+	
+	<select id="Backer_validateBackerIsExist" parameterType="java.util.Map" resultType="int">
+	   SELECT COUNT(backerAccount)
+	   FROM backer_tab
+	   WHERE backerAccount = #{backerAccount}
+	</select>
+	
+	<select id="Backer_validateBakcerLogin" parameterType="java.util.Map" resultType="BackerDO">
+	   SELECT backerId, backerAccount, roleId, addTime
+       FROM backer_tab
+	   WHERE backerAccount = #{backerAccount}
+	   AND password = #{password}
+	</select>
+	
+	<update id="Backer_updateBackerPasswoed" parameterType="java.util.Map">
+	   UPDATE backer_tab
+	   SET password = #{newPassword}
+	   WHERE backerId = #{backerId}
+       AND password = #{oldPassword} 
+	</update>
+	
+	<update id="Backer_updateResetBackerPassword" parameterType="java.util.Map">
+	   UPDATE backer_tab
+	   SET password = #{newPassword}
+	   WHERE backerId = #{backerId}
+	</update>
+	
+	<update id="Backer_updateBackerRole" parameterType="java.util.Map">
+	   UPDATE backer_tab
+       SET roleId = #{roleId}
+       WHERE backerId = #{backerId}
+	</update>
+	
+	<delete id="Backer_deleteBackerByBackerId" parameterType="int">
+	   DELETE FROM backer_tab
+	   WHERE backerId = #{backerId}
+	</delete>
+	
+	<select id="Backer_queryBackerNumberByRoleId" parameterType="int" resultType="int">
+	   SELECT COUNT(*)
+	   FROM backer_tab
+	   WHERE roleId = #{roleId}
+	</select>
+	
+</mapper>

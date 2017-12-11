@@ -1,0 +1,237 @@
+<%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="<%=path %>/resource/image/back/icon.ico" type="image/x-ico">
+	
+    <link rel="stylesheet" type="text/css" href="<%=path %>/resource/css/back/public.css" />
+    <link rel="stylesheet" type="text/css" href="<%=path %>/resource/css/back/accountRole_add.css" />
+    <link rel="stylesheet" type="text/css" href="<%=path %>/resource/css/back/simpleTips.css">
+    
+    <title>修改角色</title>
+</head>
+<body>
+<div id="header"></div>
+
+
+<div class="content">
+    <div id="menu"></div>
+
+    <div class="contentRight">
+        <div class="title">修改角色</div>
+
+        <div>
+            <ul class="addAffiche">
+                <li class="infoTitle"><img src="<%=path %>/resource/image/back/location_img.png">修改角色</li>
+                
+                <li class="addRole">
+	                <form id="modifyForm" action="<%=path%>/backerWeb/backerRole/roleModify.htm" method="post">
+	                	<input type="hidden" id="modify_roleId" name="modify_roleId" value="${role.roleId}">
+	                	<input type="hidden" id="modify_powerIdList" name="modify_powerIdList">
+	                    <label class="caption">角色名称<span>*</span>：</label>
+	                    <input type="text" class="txt" placeholder="请输入角色名称，2-16个字" maxlength="16" autocomplete="off" 
+	                    	id="modify_roleName" name="modify_roleName" value="${role.roleName}"/>
+	                </form>
+                </li>
+                
+                <li class="addRole">
+                	<label class="caption">角色权限<span>*</span>：</label>
+                    <p class="role">
+                        <span class="limits">业务模块</span>
+                        <span class="child">业务功能</span>
+                    </p>
+                    
+                    <p class="role">
+                        <label class="limitsChoose"><input type="checkbox" id="171000" value="171000" onchange="onChangeHandle(171000, 1, 171001)" />角色管理</label>
+                        <span class="childChoose">
+                            <label class="button"><input type="checkbox" id="171001" value="171001" onchange="onChangeHandle(171001, 2, 171001)" />查询</label>
+                            <label class="button"><input type="checkbox" id="171002" value="171002" onchange="onChangeHandle(171002, 3, 171001)" />新增角色</label>
+                            <label class="button"><input type="checkbox" id="171003" value="171003" onchange="onChangeHandle(171003, 3, 171001)" />修改角色</label>
+                            <label class="button"><input type="checkbox" id="171004" value="171004" onchange="onChangeHandle(171004, 3, 171001)" />删除角色</label>
+                        </span>
+                    </p>
+                    
+                    
+                    
+                </li>
+            </ul>
+            
+            <p class="bottom">
+                <input type="text" value="取&nbsp;消" onfocus="this.blur()" class="cancel" onclick="cancelHandle()" />
+                <input type="text" value="确&nbsp;定" onfocus="this.blur()" class="confirm" onclick="sureHandle()" />
+            </p>
+            
+        </div>
+    </div>
+</div>
+</body>
+
+
+<script type="text/javascript" src="http://libs.baidu.com/jquery/2.1.4/jquery.min.js"></script>
+<script type="text/javascript" src="<%=path %>/resource/js/loadBackPage.js"></script>
+<script type="text/javascript" src="<%=path %>/resource/js/simpleTips.js"></script>
+
+<script type="text/javascript">
+	window.onload = function()
+	{
+		var code = ${code};
+		var message = '${message}';
+		if(code != 1 && message != "")
+		{
+			openTips(message);
+			return false;
+		}
+		
+		showPower();
+	}
+	
+	function showPower()
+    {
+    	 var powerList = ${powerList} ;
+    	 for(var i=0; i<powerList.length; i++)
+    	 {
+    	 	var powerId = powerList[i];
+    	 	document.getElementById(powerId).checked = true;
+    	 }
+    }
+	
+	function cancelHandle()
+  	{
+  		window.location.href="<%=path%>/backerWeb/backerRole/show.htm";
+  	}
+  	
+  	function sureHandle()
+  	{
+  		var powerIdList = "";
+  		var inputList = document.getElementsByTagName("input");
+  		for (var i = 0; i < inputList.length; i++)
+  		{
+  			if (inputList[i].type == "checkbox")
+  			{
+  				var itemInput = inputList[i];
+  				if(itemInput.checked)
+  				{
+  					powerIdList += "," + itemInput.value;
+  				}
+  			}
+ 		}
+ 		
+ 		var modify_roleName = document.getElementById("modify_roleName").value;
+  		
+  		if(modify_roleName == null || modify_roleName == "" || modify_roleName.length<2 || modify_roleName.length>16)
+  		{
+  			openTips("请输入角色名称，要求2到16位");
+  			return;
+  		}
+  		if(powerIdList == null || powerIdList == "")
+  		{
+  			openTips("请选择角色权限");
+  			return;
+  		}
+  		
+  		document.getElementById("modify_powerIdList").value = powerIdList;
+  		$("#modifyForm").submit();
+  	}
+  	
+  	function onChangeHandle(powerId, markType, tePowerId)
+  	{
+  		var selected = false;
+  		var curCheckBox = document.getElementById(powerId);
+  		if(curCheckBox.checked)
+  		{
+  			selected = true;
+  		}
+  		
+  		if(markType == 1)
+  		{
+ 			var inputList = document.getElementsByTagName("input");
+	  		for (var i = 0; i < inputList.length; i++)
+	  		{
+	  			if (inputList[i].type == "checkbox")
+	  			{
+	  				var itemInput = inputList[i];
+	  				var inputValue = itemInput.value;
+	  				
+	  				var tempValue = parseInt(inputValue/100)*100;
+	  				if(tempValue == powerId)
+	  				{
+	  					if(selected)
+	  					{
+	  						itemInput.checked = true;
+	  					}else{
+	  						itemInput.checked = false;
+	  					}
+	  				}
+	  			}
+  			}
+  		}
+  		else if(markType == 2)
+  		{
+  			if(selected)
+  			{
+  				var inputList = document.getElementsByTagName("input");
+		  		for (var i = 0; i < inputList.length; i++)
+		  		{
+		  			if (inputList[i].type == "checkbox")
+		  			{
+		  				var itemInput = inputList[i];
+		  				var inputValue = itemInput.value;
+		  				
+		  				var tempValue = parseInt(powerId/100)*100;
+		  				if(tempValue == inputValue)
+		  				{
+	  						itemInput.checked = true;
+		  				}
+		  			}
+	  			}
+  			}else{
+  				var inputList = document.getElementsByTagName("input");
+		  		for (var i = 0; i < inputList.length; i++)
+		  		{
+		  			if (inputList[i].type == "checkbox")
+		  			{
+		  				var itemInput = inputList[i];
+		  				var inputValue = itemInput.value;
+		  				
+		  				var tempValue = parseInt(inputValue/100)*100;
+		  				var tempValue2 = parseInt(powerId/100)*100;
+		  				if(tempValue == tempValue2)
+		  				{
+	  						itemInput.checked = false;
+		  				}
+		  			}
+	  			}
+  			}
+  		}
+  		else if(markType == 3)
+  		{
+  			if(selected)
+  			{
+  				var inputList = document.getElementsByTagName("input");
+		  		for (var i = 0; i < inputList.length; i++)
+		  		{
+		  			if (inputList[i].type == "checkbox")
+		  			{
+		  				var itemInput = inputList[i];
+		  				var inputValue = itemInput.value;
+		  				
+		  				var tempValue = parseInt(powerId/100)*100;
+		  				if(tempValue == inputValue || inputValue == tePowerId)
+		  				{
+	  						itemInput.checked = true;
+		  				}
+		  			}
+	  			}
+	  		}
+  		}
+  		
+  	}
+</script>
+
+</html>

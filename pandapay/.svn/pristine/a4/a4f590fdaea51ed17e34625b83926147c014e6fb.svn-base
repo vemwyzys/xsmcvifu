@@ -1,0 +1,23 @@
+package com.pandapay.service.impl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.pandapay.dao.IBackerRecordInviteCodeDao;
+import com.pandapay.service.IBackerRecordInviteCodeService;
+
+/**
+ * 邀请码发放记录
+ * @author gql
+ *
+ */
+@Service("backerRecordInviteCodeService")
+public class BackerRecordInviteCodeServiceImpl implements IBackerRecordInviteCodeService{
+
+	/** 邀请码发放记录  */
+	@Autowired
+	private IBackerRecordInviteCodeDao backerRecordInviteCodeDao;
+	
+	
+	
+}
